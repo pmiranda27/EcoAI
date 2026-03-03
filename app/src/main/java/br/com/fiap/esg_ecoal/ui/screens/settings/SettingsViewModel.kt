@@ -1,0 +1,4 @@
+package br.com.fiap.esg_ecoal.ui.screens.settings
+
+class SettingsViewModel {
+}
