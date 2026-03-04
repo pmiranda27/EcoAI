@@ -1,11 +1,10 @@
 package br.com.fiap.esg_ecoal.navigation
 
 /**
- * Define as rotas disponíveis no app como constantes seguras
+ * Define as rotas disponíveis no app de forma segura (Type-safe).
+ * Usar 'sealed class' com 'data object' é o padrão profissional para navegação no Compose.
  */
-
 sealed class ScreenRoute(val route: String) {
-    object Splash : ScreenRoute("splash_screen")
-    object Login : ScreenRoute("login_screen")
-    object SignUp : ScreenRoute ("signup_screen")
+    data object Splash : ScreenRoute("splash_screen")
+    data object Home : ScreenRoute("home_screen") // Para onde o usuário vai após o Login
 }

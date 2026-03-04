@@ -1,166 +1,110 @@
 package br.com.fiap.esg_ecoal.ui.screens
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import br.com.fiap.esg_ecoal.R
-import androidx.compose.animation.core.tween
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import kotlinx.coroutines.delay
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import br.com.fiap.esg_ecoal.ui.components.EsgPill
+import androidx.compose.ui.unit.dp
+import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.ui.components.GlassButton
+import br.com.fiap.esg_ecoal.ui.components.SplashBackground
+import br.com.fiap.esg_ecoal.ui.components.SplashHeroContent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
- * TELA DE ABERTURA DO APP
- * Ela gereencia a animação inicial da logo e a transiçãop ara as opções de Login e cadastro
- * @param onNavigateToLogin é a função para navegar até a tela de login.
- * @param onNavigateToSignUp é a função para navegar até a tela de cadastro
+ * TELA DE ABERTURA (SPLASH)
+ * Gerencia a animação da logo e a transição para as opções de entrada.
+ * Esta tela agora atua como um "Container", delegando o visual para componentes menores.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) {
 
-    // Criação de estados para controlar o gatilho das animações sequenciais
-    // O remember é utilizado para se lembrar do estado mesmo e guardar na memória para não resetar se a tela precisar ser atualizada
-    var showContent by remember { mutableStateOf(false) }   // Inicia como false para logo não se mover
-    var logoMoved by remember { mutableStateOf(false) }     // Inicia como false para o conteúdo não aparecer
+    // --- ESTADOS DE CONTROLE ---
+    // showContent: Controla quando os botões e textos aparecem (fade-in)
+    var showContent by remember { mutableStateOf(false) }
+    // logoMoved: Controla quando a logo deve subir para o topo
+    var logoMoved by remember { mutableStateOf(false) }
+
+    // currentSheet: Controla qual conteúdo mostrar dentro do ModalBottomSheet.
+    // O SheetType é buscado automaticamente do arquivo SplashScreenState.kt
+    var currentSheet by remember { mutableStateOf(SheetType.NONE) }
+
+    // --- CONFIGURAÇÕES DO MODAL (GAVETA) ---
+    // sheetState: Controla o estado interno da gaveta (aberta/fechada)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    // scope: Necessário para rodar funções de fechar a gaveta (hide) com animação
+    val scope = rememberCoroutineScope()
 
     // --- DEFINIÇÕES DE ANIMAÇÃO ---
 
-    // Anima o tamanho da logo (diminui quando move para o topo)
+    // Anima o tamanho da logo: diminui de 220dp para 160dp quando ela sobe
     val logoSize by animateDpAsState(
-        targetValue = if (logoMoved) 160.dp else 220.dp,    // (tamanho) Se true 160 se false 220
-        animationSpec = tween(1000, easing = FastOutSlowInEasing)   // Duração e tipo de animação
+        targetValue = if (logoMoved) 160.dp else 220.dp,
+        animationSpec = tween(1000, easing = FastOutSlowInEasing)
     )
 
-    // Anima a posição vertical da logo (sobe do centro para o topo)
+    // Anima a posição vertical: sobe 280dp em relação ao centro original
     val logoOffset by animateDpAsState(
-        targetValue = if (logoMoved) (-280).dp else 0.dp,   // (posição) se true -280 se false 0
-        animationSpec = tween(1000, easing = FastOutSlowInEasing)   // Duração e tipo de animação
+        targetValue = if (logoMoved) (-280).dp else 0.dp,
+        animationSpec = tween(1000, easing = FastOutSlowInEasing)
     )
 
-    // Controla a transparência (fade-in) dos textos, botões e fundo
+    // Anima a transparência (fade): vai de 0 (invisível) a 1 (visível)
     val contentAlpha by animateFloatAsState(
-        targetValue = if (showContent) 1f else 0f,  // se true 1 (totalmente visisel) se false 0 (totalemente opaco)
-        animationSpec = tween(1500)    // duraçõa da animação
-    )
-    val contentOffset by animateDpAsState(
-        targetValue = if (showContent) 0.dp else 20.dp, // se true, fica na posição original, se false, um deslocamento de 20 pixel para baixo
-        animationSpec = tween(1500)     // duração da animação
+        targetValue = if (showContent) 1f else 0f,
+        animationSpec = tween(1500)
     )
 
-    // Essa ferramenta diz para a animação não se repetir ao sair e voltar para essa tela
-    // Unit faz com que isso rode uma única vez
+    // Anima o leve deslocamento vertical do conteúdo central para um efeito mais fluido
+    val contentOffset by animateDpAsState(
+        targetValue = if (showContent) 0.dp else 20.dp,
+        animationSpec = tween(1500)
+    )
+
+    // Gatilho sequencial: Roda apenas uma vez ao entrar na tela para disparar as animações
     LaunchedEffect(Unit) {
-        delay(800)      // O app espera 0.8 segundos (tempo para o usuario ver a logo centralizada)
-        logoMoved = true           // Muda o estado da logo para true
-        delay(400)      // Delay para começar o fade-in do fundo
-        showContent = true         // Muda o estado do conteudo para true
+        delay(800)          // Espera a logo aparecer no centro
+        logoMoved = true    // Faz a logo subir
+        delay(400)          // Espera um pouco antes de mostrar o resto
+        showContent = true  // Revela o fundo, textos e botões
     }
 
-    var showLoginSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
-
-    // --- ESTRUTURA VISUAL (LAYOUT)---
-
+    // --- ESTRUTURA VISUAL ---
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
 
-        // Imagem de fundo com efeito de transparencia animada
-        Image(
-            painter = painterResource(id = R.drawable.flowers3),    // Coleta imagem da pasta drawable
-            contentDescription = null,                              // Deixa sem descrição
-            modifier = Modifier.fillMaxSize().alpha(contentAlpha),  // fillMaxSize() Ocupa toda a largura e altura disponível no celular, alpha(contentAlpha) aplica a tarsparencia criada antes
-            contentScale = ContentScale.Crop        // Garante que não fiquuem vazios na tela
-        )
+        // 1. COMPONENTE DE FUNDO: Extraído para profissionalizar o código e permitir reuso
+        SplashBackground(alpha = contentAlpha)
 
-        // Gradiente para garantir contraste entre a imagem e os textos brancos
-        Box(
-            modifier = Modifier.fillMaxSize().alpha(contentAlpha)       // fillMaxSize() Ocupa toda a largura e altura disponível no celular, alpha(contentAlpha) aplica a tarsparencia criada antes
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Black.copy(0.5f), Color.Transparent, Color.Black),
-                        startY = 500f
-                    )
-                )
-        )
-
-        // Logo: Mantida fora da Column para mover-se independentemente do layout
+        // 2. LOGO ECOAL: Mantida na Screen devido à animação de posição ser muito específica
         Image(
             painter = painterResource(id = R.drawable.logo1),
             contentDescription = "Logo",
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(y = logoOffset)
-                .size(logoSize)
+                .offset(y = logoOffset) // Aplica o movimento de subida
+                .size(logoSize)         // Aplica a redução de tamanho
         )
 
-        // Bloco Central: Slogan e Indicadores ESG
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center) // Centraliza a coluna
-                .offset(y = (-70).dp + contentOffset) // Ajuste para ficar abaixo da logo movida
-                .alpha(contentAlpha)
-                .padding(horizontal = 30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Descrição primária
-            Text(
-                text = "Transforme sua empresa com sustentabilidade",
-                color = Color.White,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
+        // 3. BLOCO CENTRAL (SLOGAN/ESG): Extraído para reduzir o tamanho deste arquivo
+        SplashHeroContent(
+            alpha = contentAlpha,
+            offset = contentOffset,
+            modifier = Modifier.align(Alignment.Center)
+        )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Descrição secundária
-            Text(
-                text = "Gerencie indicadores ambientais, sociais e de governança de forma simples e eficiente.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Pílulas indicativas dos pilares ESG (Componentes Reutilizáveis)
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                EsgPill("Ambiental")
-                EsgPill("Social")
-                EsgPill("Governança")
-            }
-        }
-
-        // Bloco Inferior: Ações de entrada e Termos de Uso
+        // 4. BLOCO INFERIOR: Botões de Ação (Login e Cadastro)
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -169,9 +113,9 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
                 .alpha(contentAlpha),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Ação Principal: Login
+            // Botão "ENTRAR": Altera o estado para abrir a gaveta de LOGIN
             Button(
-                onClick = { showLoginSheet = true },
+                onClick = { currentSheet = SheetType.LOGIN },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
@@ -181,10 +125,10 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Ação Secundária: Cadastro (Componente Customizado)
+            // Botão "Criar Conta": Componente customizado que abre a gaveta de SIGNUP
             GlassButton(
                 text = "Criar Conta",
-                onClick = onNavigateToSignUp
+                onClick = { currentSheet = SheetType.SIGNUP }
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -196,28 +140,57 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
                 color = Color.White.copy(0.5f),
                 textAlign = TextAlign.Center
             )
-
         }
-        if (showLoginSheet) {
+
+        // --- LÓGICA DA GAVETA (MODAL BOTTOM SHEET) ---
+        // Exibe a gaveta se currentSheet for LOGIN ou SIGNUP
+        if (currentSheet != SheetType.NONE) {
             ModalBottomSheet(
-                onDismissRequest = { showLoginSheet = false },
+                onDismissRequest = { currentSheet = SheetType.NONE }, // Fecha ao clicar fora ou deslizar para baixo
                 sheetState = sheetState,
-                containerColor = Color.White, // Cor de fundo da gaveta
+                containerColor = Color.White,
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
             ) {
-                // Chamando a função LoginSheetContent criada
-                LoginSheetContent(
-                    onLoginSuccess = {
-                        showLoginSheet = false
-                        onNavigateToLogin() // Ou navegar para a Home
-                    },
-                    onClose = { showLoginSheet = false }
-                )
+                // Alterna o conteúdo da gaveta baseado no estado atual
+                when (currentSheet) {
+                    SheetType.LOGIN -> {
+                        LoginScreen(
+                            onLoginSuccess = {
+                                // Esconde a gaveta antes de executar a navegação final
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    currentSheet = SheetType.NONE
+                                    onNavigateToLogin()
+                                }
+                            },
+                            onClose = {
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    currentSheet = SheetType.NONE
+                                }
+                            }
+                        )
+                    }
+                    SheetType.SIGNUP -> {
+                        SignUpScreen(
+                            onSignupSuccess = {
+                                // Esconde a gaveta antes de executar a navegação final
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    currentSheet = SheetType.NONE
+                                    onNavigateToSignUp()
+                                }
+                            },
+                            onClose = {
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    currentSheet = SheetType.NONE
+                                }
+                            }
+                        )
+                    }
+                    else -> {}
+                }
             }
         }
     }
 }
-
 
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true, showSystemUi = true)
 @Composable

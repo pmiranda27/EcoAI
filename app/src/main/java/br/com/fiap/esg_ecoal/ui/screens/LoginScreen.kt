@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import br.com.fiap.esg_ecoal.ui.components.EsgTextField
 
 /**
  * Componente que representa o conteúdo da gaveta (Bottom Sheet) de Login.
@@ -25,7 +26,7 @@ import androidx.compose.ui.unit.dp
  * @param onClose Função para fechar a gaveta.
  */
 @Composable
-fun LoginSheetContent(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
+fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
 
     // --- ESTADOS DE MEMÓRIA (REACTIVE UI) ---
     // remember: Faz o Compose "lembrar" do valor mesmo que a tela seja redesenhada.
@@ -36,15 +37,6 @@ fun LoginSheetContent(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
     var passwordVisible by remember { mutableStateOf(false) } // Controla se a senha aparece como texto ou asteriscos.
 
     val scrollState = rememberScrollState()
-
-    // --- CONFIGURAÇÃO DE ESTILO ---
-    // OutlinedTextFieldDefaults.colors: Define o esquema de cores para os campos de entrada (borda, cursor, etc).
-    val customTextFieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = MaterialTheme.colorScheme.inversePrimary, // Cor da borda quando o usuário clica na caixa.
-        unfocusedBorderColor = Color.LightGray,                        // Cor da borda quando a caixa não está selecionada.
-        cursorColor = MaterialTheme.colorScheme.inversePrimary,        // Cor do palito que pisca ao digitar.
-        focusedPlaceholderColor = Color.Gray                           // Cor do texto de exemplo quando focado.
-    )
 
     // --- LAYOUT DA TELA ---
     Column(
@@ -83,21 +75,15 @@ fun LoginSheetContent(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth() // Garante que o texto ocupe a largura para o TextAlign funcionar.
         )
-
-        // Campo de entrada de E-mail
-        OutlinedTextField(
-            value = email,                        // O valor exibido vem da variável 'email'.
-            onValueChange = { email = it },       // Toda vez que o usuário digita, a variável 'email' recebe o novo texto ('it').
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            placeholder = { Text("empresa@email.com", color = Color.Gray) }, // Texto de dica dentro da caixa.
-            modifier = Modifier.fillMaxWidth(),   // Faz a caixa ocupar toda a largura.
-            shape = RoundedCornerShape(12.dp),    // Arredonda os cantos da borda da caixa.
-            singleLine = true,                    // Impede que o usuário pule linha (tecla Enter).
-            colors = customTextFieldColors        // Aplica as cores de foco/desfoco definidas acima.
+        EsgTextField(
+            value = email,
+            onValueChange = { email = it },
+            placeholder = "empresa@email.com",
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
 
-        // Espaçamento entre o campo de e-mail e o de senha.
         Spacer(modifier = Modifier.height(16.dp))
+
 
         // Rótulo (Label) manual para a Senha
         Text(
@@ -109,33 +95,20 @@ fun LoginSheetContent(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
         )
 
         // Campo de entrada de Senha
-        OutlinedTextField(
+        EsgTextField(
             value = password,
             onValueChange = { password = it },
-            placeholder = { Text("Digite sua senha", color = Color.Gray) },
-            // Transforma o texto: se 'passwordVisible' for true, mostra o texto; se false, oculta.
+            placeholder = "Digite sua senha",
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            // Abre o teclado otimizado para senhas.
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true,
-            colors = customTextFieldColors,
-            // Ícone que aparece no final da caixa (lado direito).
             trailingIcon = {
-                // Define a cor do ícone: roxo se ativo, cinza transparente se inativo.
-                val iconColor = if (passwordVisible) {
-                    MaterialTheme.colorScheme.inversePrimary
-                } else {
-                    Color.Gray.copy(alpha = 0.5f)
-                }
-
-                // Botão clicável para o ícone.
+                // Lógica de ícone dinâmico
+                val iconColor = if (passwordVisible) MaterialTheme.colorScheme.inversePrimary else Color.Gray.copy(alpha = 0.5f)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
                         painter = painterResource(id = br.com.fiap.esg_ecoal.R.drawable.eye),
                         contentDescription = "Mostrar Senha",
-                        tint = iconColor // Aplica a cor dinâmica calculada acima.
+                        tint = iconColor
                     )
                 }
             }

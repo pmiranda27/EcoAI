@@ -12,29 +12,26 @@ fun SetupNavigation(navController: NavHostController) {
         navController = navController,
         startDestination = ScreenRoute.Splash.route
     ) {
-        // Rota para Splash Screen
+        // Rota da Splash: Ela gerencia internamente as gavetas de Login e Cadastro
         composable(route = ScreenRoute.Splash.route) {
             SplashScreen(
                 onNavigateToLogin = {
-                    // Quando clicar em entrar, vai para a rota 'login'
-                    navController.navigate(ScreenRoute.Login.route)
+                    // Navega para a Home após o sucesso do Login na gaveta
+                    navController.navigate(ScreenRoute.Home.route) {
+                        popUpTo(ScreenRoute.Splash.route) { inclusive = true }
+                    }
                 },
                 onNavigateToSignUp = {
-                    // Quando clicar, vai para 'signup'
-                    navController.navigate(ScreenRoute.SignUp.route)
+                    // Navega para a Home (ou uma tela de boas-vindas) após o Cadastro
+                    navController.navigate(ScreenRoute.Home.route) {
+                        popUpTo(ScreenRoute.Splash.route) { inclusive = true }
+                    }
                 }
             )
         }
 
-        // Rota para tela de Login
-        composable(route = ScreenRoute.Login.route) {
-            // LoginScreen(navController)
-        }
-
-        // Rota para tela de Cadastro
-        composable(route = ScreenRoute.SignUp.route) {
-            // SignUpScreen(navController)
+        // Rota para a tela principal do sistema (Dashboard ESG)
+        composable(route = ScreenRoute.Home.route) {
         }
     }
 }
-
