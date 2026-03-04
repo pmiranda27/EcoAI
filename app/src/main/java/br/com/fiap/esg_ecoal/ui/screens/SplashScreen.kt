@@ -28,6 +28,9 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +43,7 @@ import br.com.fiap.esg_ecoal.ui.components.GlassButton
  * @param onNavigateToLogin é a função para navegar até a tela de login.
  * @param onNavigateToSignUp é a função para navegar até a tela de cadastro
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) {
 
@@ -80,6 +84,9 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
         delay(400)      // Delay para começar o fade-in do fundo
         showContent = true         // Muda o estado do conteudo para true
     }
+
+    var showLoginSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
 
     // --- ESTRUTURA VISUAL (LAYOUT)---
 
@@ -164,7 +171,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
         ) {
             // Ação Principal: Login
             Button(
-                onClick = onNavigateToLogin,
+                onClick = { showLoginSheet = true },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
@@ -189,6 +196,24 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
                 color = Color.White.copy(0.5f),
                 textAlign = TextAlign.Center
             )
+
+        }
+        if (showLoginSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showLoginSheet = false },
+                sheetState = sheetState,
+                containerColor = Color.White, // Cor de fundo da gaveta
+                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+            ) {
+                // Chamando a função LoginSheetContent criada
+                LoginSheetContent(
+                    onLoginSuccess = {
+                        showLoginSheet = false
+                        onNavigateToLogin() // Ou navegar para a Home
+                    },
+                    onClose = { showLoginSheet = false }
+                )
+            }
         }
     }
 }
@@ -198,7 +223,6 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
 @Composable
 fun SplashScreenPreview() {
     br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme {
-        // Passamos funções vazias {} apenas para o Preview não dar erro
         SplashScreen(
             onNavigateToLogin = {},
             onNavigateToSignUp = {}
