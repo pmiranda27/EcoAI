@@ -24,11 +24,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBarDefaultWithGoBackButton(title: String = "") {
+fun AppBarDefaultWithGoBackButton(title: String = "", navController: NavHostController) {
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,7 +51,7 @@ fun AppBarDefaultWithGoBackButton(title: String = "") {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Voltar",
@@ -74,6 +76,6 @@ fun AppBarDefaultWithGoBackButton(title: String = "") {
 )
 fun PreviewAppBarDefault(){
     ESGEcoalTheme {
-        AppBarDefaultWithGoBackButton("Título")
+        AppBarDefaultWithGoBackButton("Título", rememberNavController())
     }
 }

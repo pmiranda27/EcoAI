@@ -7,4 +7,6 @@ package br.com.fiap.esg_ecoal.navigation
 sealed class ScreenRoute(val route: String) {
     data object Splash : ScreenRoute("splash_screen")
     data object Home : ScreenRoute("home_screen") // Para onde o usuário vai após o Login
+    data object Settings : ScreenRoute("settings_screen")
+    data object Idiomas : ScreenRoute("idiomas_screen")
 }
