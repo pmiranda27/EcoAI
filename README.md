@@ -57,6 +57,8 @@ To ensure a robust and scalable solution, the app follows modern Android develop
 - **Password Visibility Toggle:** Custom trailing icons with reactive UI updates.
 - **Responsive Design:** Fully adapted for different screen sizes with scrollable containers.
 
+![Splash Screen](./assets/SplashScreen.png) ![Login Screen](./assets/LoginScreen.png) ![SignUp Screen](./assets/SignUpScreen.png)
+
 ---
 
 ## 🚀 How to Run
