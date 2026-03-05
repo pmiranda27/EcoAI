@@ -57,7 +57,9 @@ fun IdiomaScreen(navController: NavHostController) {
         ) { paddingValues ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
                 IdiomaOpcaoItem(
@@ -86,81 +88,74 @@ fun IdiomaScreen(navController: NavHostController) {
 fun IdiomaOpcaoItem(titulo: String = "", bandeira: Painter, marcado: Boolean = false) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-
+            .fillMaxWidth(fraction = 0.95f)
+            .height(60.dp)
+            .clip(RoundedCornerShape(12.dp))
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .clip(RoundedCornerShape(12.dp))
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(
-                        Brush.horizontalGradient(
-                            startX = 0.0f,
-                            endX = Float.POSITIVE_INFINITY,
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.55f),
-                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.55f)
-                            )
+                .background(
+                    Brush.horizontalGradient(
+                        startX = 0.0f,
+                        endX = Float.POSITIVE_INFINITY,
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.55f),
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.55f)
                         )
                     )
-                    .fillMaxSize()
+                )
+                .fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Row(
+                Image(
+                    painter = bandeira,
+                    contentDescription = titulo,
+                    contentScale = ContentScale.FillHeight,
                     modifier = Modifier
-                        .fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Image(
-                        painter = bandeira,
-                        contentDescription = titulo,
-                        contentScale = ContentScale.FillHeight,
-                        modifier = Modifier
-                            .fillMaxHeight(fraction = 0.65f)
-                    )
-                    Text(
-                        text = titulo,
-                        style = TextStyle(
-                            fontFamily = poppinsFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp,
-                            lineHeight = 16.sp,
-                            letterSpacing = 0.sp
+                        .fillMaxHeight(fraction = 0.65f)
+                )
+                Text(
+                    text = titulo,
+                    style = TextStyle(
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.sp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 0.65f),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight(fraction = 0.55f)
+                        .aspectRatio(1f)
+                        .clip(CircleShape)
+                        .border(
+                            width = 3.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        )
+                        .background(
+                            if (marcado) MaterialTheme.colorScheme.primary.copy(0.70f)
+                            else Color.Transparent
                         ),
-                        modifier = Modifier
-                            .fillMaxWidth(fraction = 0.65f),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight(fraction = 0.55f)
-                            .aspectRatio(1f)
-                            .clip(CircleShape)
-                            .border(
-                                width = 3.dp,
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = CircleShape
-                            )
-                            .background(
-                                if (marcado) MaterialTheme.colorScheme.primary.copy(0.70f)
-                                else Color.Transparent
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (marcado) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier
-                                    .fillMaxSize(fraction = 0.85f)
-                            )
-                        }
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (marcado) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .fillMaxSize(fraction = 0.85f)
+                        )
                     }
                 }
             }

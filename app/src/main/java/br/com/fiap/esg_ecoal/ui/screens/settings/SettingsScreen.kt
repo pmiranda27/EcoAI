@@ -70,7 +70,7 @@ fun SettingsScreen(navController: NavHostController) {
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            topBar = { AppBarDefaultWithGoBackButton("Configurações", navController)},
+            topBar = { AppBarDefaultWithGoBackButton("Configurações", navController) },
             bottomBar = { BottomBarLogOut() },
             containerColor = Color.LightGray
         ) { paddingValues ->
@@ -182,25 +182,22 @@ fun SettingsScreen(navController: NavHostController) {
 
 @Composable
 fun SettingsCategory(titulo: String = "", conteudo: @Composable () -> Unit) {
-    Box(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = titulo,
-                modifier = Modifier
-                    .align(Alignment.Start),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = titulo,
+            modifier = Modifier
+                .align(Alignment.Start),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
-            conteudo()
-        }
+        conteudo()
     }
 }
 
@@ -216,8 +213,7 @@ fun SettingsOptionItem(
             defaultElevation = 80.dp,
         ),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .fillMaxWidth(fraction = 0.95f)
             .clip(RoundedCornerShape(10.dp))
             .clickable(
                 onClick = {
@@ -273,11 +269,10 @@ fun SettingsOptionItemWithTrailing(
 ) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 80.dp,
+            defaultElevation = 20.dp,
         ),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .fillMaxWidth(fraction = 0.95f)
             .clip(RoundedCornerShape(10.dp))
             .clickable(
                 onClick = {
