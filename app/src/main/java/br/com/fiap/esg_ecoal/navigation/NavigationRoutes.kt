@@ -5,6 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import br.com.fiap.esg_ecoal.ui.screens.SplashScreen
+import br.com.fiap.esg_ecoal.ui.screens.settings.IdiomaScreen
+import br.com.fiap.esg_ecoal.ui.screens.settings.SettingsScreen
 
 @Composable
 fun SetupNavigation(navController: NavHostController) {
@@ -35,6 +37,11 @@ fun SetupNavigation(navController: NavHostController) {
         }
 
         composable(route = ScreenRoute.Settings.route){
+            SettingsScreen()
+        }
+
+        composable(route = ScreenRoute.Idiomas.route){
+            IdiomaScreen()
         }
     }
 }
