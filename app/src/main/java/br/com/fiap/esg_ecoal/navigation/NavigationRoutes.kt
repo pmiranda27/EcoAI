@@ -33,5 +33,8 @@ fun SetupNavigation(navController: NavHostController) {
         // Rota para a tela principal do sistema (Dashboard ESG)
         composable(route = ScreenRoute.Home.route) {
         }
+
+        composable(route = ScreenRoute.Settings.route){
+        }
     }
 }
