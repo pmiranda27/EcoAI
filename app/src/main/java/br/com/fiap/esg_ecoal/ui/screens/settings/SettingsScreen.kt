@@ -2,6 +2,7 @@ package br.com.fiap.esg_ecoal.ui.screens.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.ErrorOutline
@@ -52,21 +53,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
+import br.com.fiap.esg_ecoal.navigation.ScreenRoute
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
 
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(navController: NavHostController) {
     var temaEscuro by remember {
         mutableStateOf(false)
     }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            topBar = { AppBarDefaultWithGoBackButton("Configurações") },
+            topBar = { AppBarDefaultWithGoBackButton("Configurações", navController)},
             bottomBar = { BottomBarLogOut() },
             containerColor = Color.LightGray
         ) { paddingValues ->
@@ -116,9 +120,15 @@ fun SettingsScreen() {
                             SettingsOptionItemWithTrailing(
                                 icone = Icons.Default.Lightbulb,
                                 texto = "Tema",
+                                rota = "",
+                                navController = navController,
                                 changeTheme = {})
                             Spacer(modifier = Modifier.height(8.dp))
-                            SettingsOptionItemWithTrailing(icone = Icons.Default.Language, "Idioma")
+                            SettingsOptionItemWithTrailing(
+                                icone = Icons.Default.Language, "Idioma",
+                                rota = ScreenRoute.Idiomas.route,
+                                navController = navController
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))
@@ -129,17 +139,23 @@ fun SettingsScreen() {
                         SettingsCategory("Progresso — ESG") {
                             SettingsOptionItem(
                                 icone = painterResource(R.drawable.folha_verde),
-                                texto = "Ambiental"
+                                texto = "Ambiental",
+                                rota = "",
+                                navController = navController
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             SettingsOptionItem(
                                 icone = painterResource(R.drawable.mao_vermelha),
-                                texto = "Social"
+                                texto = "Social",
+                                rota = "",
+                                navController = navController
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             SettingsOptionItem(
                                 icone = painterResource(R.drawable.governanca_laranja),
-                                texto = "Governança"
+                                texto = "Governança",
+                                rota = "",
+                                navController = navController
                             )
                         }
 
@@ -152,6 +168,8 @@ fun SettingsScreen() {
                             SettingsOptionItemWithTrailing(
                                 icone = Icons.Default.ErrorOutline,
                                 texto = "Sobre",
+                                rota = "",
+                                navController = navController
                             )
                         }
                     }
@@ -189,7 +207,9 @@ fun SettingsCategory(titulo: String = "", conteudo: @Composable () -> Unit) {
 @Composable
 fun SettingsOptionItem(
     icone: Painter,
-    texto: String = ""
+    texto: String = "",
+    rota: String,
+    navController: NavHostController
 ) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(
@@ -199,6 +219,11 @@ fun SettingsOptionItem(
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .clip(RoundedCornerShape(10.dp))
+            .clickable(
+                onClick = {
+                    navController.navigate(rota)
+                }
+            )
     ) {
         Box(
             modifier = Modifier
@@ -242,7 +267,9 @@ fun SettingsOptionItemWithTrailing(
     icone: ImageVector = Icons.Default.Error,
     texto: String = "",
     changeTheme: (() -> Unit)? = null,
-    temaEscuro: Boolean = false
+    temaEscuro: Boolean = false,
+    rota: String,
+    navController: NavHostController
 ) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(
@@ -252,6 +279,11 @@ fun SettingsOptionItemWithTrailing(
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .clip(RoundedCornerShape(10.dp))
+            .clickable(
+                onClick = {
+                    navController.navigate(rota)
+                }
+            )
     ) {
         Box(
             modifier = Modifier
@@ -288,7 +320,7 @@ fun SettingsOptionItemWithTrailing(
                 )
                 if (changeTheme == null) {
                     Icon(
-                        imageVector = Icons.Default.ArrowForwardIos,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                         contentDescription = "Opção Clicável",
                     )
                 } else {
@@ -307,7 +339,7 @@ fun SettingsOptionItemWithTrailing(
 
 
 @Composable
-fun BottomBarLogOut(modifier: Modifier = Modifier) {
+fun BottomBarLogOut() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -350,6 +382,6 @@ private fun PreviewBottomBarLogOut() {
 @Composable
 private fun PreviewSettingsScreen() {
     ESGEcoalTheme {
-        SettingsScreen()
+        SettingsScreen(navController = rememberNavController())
     }
 }

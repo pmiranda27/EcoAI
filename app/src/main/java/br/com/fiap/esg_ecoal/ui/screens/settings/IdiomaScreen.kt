@@ -38,19 +38,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
 
 @Composable
-fun IdiomaScreen() {
+fun IdiomaScreen(navController: NavHostController) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Scaffold(
-            topBar = { AppBarDefaultWithGoBackButton("Idiomas") },
+            topBar = { AppBarDefaultWithGoBackButton("Idiomas", navController) },
             containerColor = Color.LightGray
         ) { paddingValues ->
             Column(
@@ -178,6 +180,6 @@ private fun PreviewIdiomaOpcao() {
 @Composable
 private fun PreviewIdiomaScreen() {
     ESGEcoalTheme {
-        IdiomaScreen()
+        IdiomaScreen(rememberNavController())
     }
 }
