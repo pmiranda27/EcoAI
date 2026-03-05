@@ -14,6 +14,7 @@ val poppinsFamily = FontFamily(
     Font(R.font.poppins_medium),
     Font(R.font.poppins_semibold),
     Font(R.font.poppins_bold),
+    Font(R.font.poppins_extrabold)
 )
 
 val Typography = Typography(
@@ -26,9 +27,15 @@ val Typography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.ExtraBold,
         fontSize = 32.sp,
         lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
         letterSpacing = 0.sp
     ),
     labelSmall = TextStyle(
@@ -37,6 +44,13 @@ val Typography = Typography(
         fontSize = 11.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 32.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.sp
     )
 
 )
