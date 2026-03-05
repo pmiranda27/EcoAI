@@ -12,7 +12,7 @@ import br.com.fiap.esg_ecoal.ui.screens.settings.SettingsScreen
 fun SetupNavigation(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = ScreenRoute.Settings.route
+        startDestination = ScreenRoute.Splash.route
     ) {
         // Rota da Splash: Ela gerencia internamente as gavetas de Login e Cadastro
         composable(route = ScreenRoute.Splash.route) {
