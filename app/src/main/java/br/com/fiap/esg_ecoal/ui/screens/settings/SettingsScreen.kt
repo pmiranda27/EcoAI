@@ -1,7 +1,9 @@
 package br.com.fiap.esg_ecoal.ui.screens.settings
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -95,14 +98,25 @@ fun SettingsScreen(navController: NavHostController) {
                             .padding(vertical = 12.dp)
                             .fillMaxWidth()
                     ) {
-                        Box(
-//                            painter = ,
-//                            contentDescription = "Foto do Usuário",
+                        Image(
+                            painter = painterResource(R.drawable.no_photo),
+                            contentDescription = "Foto do Usuário",
                             modifier = Modifier
-                                .clip(shape = CircleShape)
                                 .size(140.dp)
-                                .background(Color.Red),
-//                          contentScale = ContentScale.Crop
+                                .border(
+                                    BorderStroke(
+                                        3.dp,
+                                        Brush.horizontalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.secondary,
+                                                MaterialTheme.colorScheme.tertiary
+                                            )
+                                        )
+                                    ),
+                                    shape = CircleShape
+                                )
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -135,7 +149,6 @@ fun SettingsScreen(navController: NavHostController) {
                     }
 
                     item {
-
                         SettingsCategory("Progresso — ESG") {
                             SettingsOptionItem(
                                 icone = painterResource(R.drawable.folha_verde),
@@ -168,7 +181,7 @@ fun SettingsScreen(navController: NavHostController) {
                             SettingsOptionItemWithTrailing(
                                 icone = Icons.Default.ErrorOutline,
                                 texto = "Sobre",
-                                rota = "",
+                                rota = ScreenRoute.Sobre.route,
                                 navController = navController
                             )
                         }
