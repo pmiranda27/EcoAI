@@ -43,7 +43,7 @@ fun AppBarDefaultWithGoBackButton(title: String = "", navController: NavHostCont
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold, // Peso médio para passar seriedade
-                    fontSize = 18.sp // Tamanho equilibrado para não dominar a tela
+                    fontSize = 20.sp // Tamanho equilibrado para não dominar a tela
                 )
             )
         },

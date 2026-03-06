@@ -8,6 +8,7 @@ val LightSecondary = Color(0xFF8A588B)
 val LightInversePrimary = Color(0xFF5F5785)
 val LightTertiary = Color(0xFF574143)
 val LightOnPrimary = Color(0xFFFFFFFF)
+val LightOnBackground = Color(0xFF000000)
 
 // Paleta Dark Mode
 val Purple40 = Color(0xFF6650a4)
