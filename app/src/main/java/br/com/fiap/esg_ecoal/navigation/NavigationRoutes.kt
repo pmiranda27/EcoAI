@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import br.com.fiap.esg_ecoal.ui.screens.HomeScreen
 import br.com.fiap.esg_ecoal.ui.screens.SplashScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.IdiomaScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.SettingsScreen
@@ -34,6 +35,10 @@ fun SetupNavigation(navController: NavHostController) {
 
         // Rota para a tela principal do sistema (Dashboard ESG)
         composable(route = ScreenRoute.Home.route) {
+            HomeScreen(
+                onSettingsClick = { navController.navigate(ScreenRoute.Settings.route) },
+                onProfileClick = { },
+                )
         }
 
         composable(route = ScreenRoute.Settings.route){
