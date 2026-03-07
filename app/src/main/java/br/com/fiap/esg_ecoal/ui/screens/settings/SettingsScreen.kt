@@ -153,22 +153,37 @@ fun SettingsScreen(navController: NavHostController) {
                             SettingsOptionItem(
                                 icone = painterResource(R.drawable.folha_verde),
                                 texto = "Ambiental",
-                                rota = "",
-                                navController = navController
+                                navigateFunction = {
+                                    navController.navigate(
+                                        ScreenRoute.ProgressoSetting.createRoute(
+                                            "Environmental"
+                                        )
+                                    )
+                                }
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             SettingsOptionItem(
                                 icone = painterResource(R.drawable.mao_vermelha),
                                 texto = "Social",
-                                rota = "",
-                                navController = navController
+                                navigateFunction = {
+                                    navController.navigate(
+                                        ScreenRoute.ProgressoSetting.createRoute(
+                                            "Social"
+                                        )
+                                    )
+                                }
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             SettingsOptionItem(
                                 icone = painterResource(R.drawable.governanca_laranja),
                                 texto = "Governança",
-                                rota = "",
-                                navController = navController
+                                navigateFunction = {
+                                    navController.navigate(
+                                        ScreenRoute.ProgressoSetting.createRoute(
+                                            "Governance"
+                                        )
+                                    )
+                                }
                             )
                         }
 
@@ -218,8 +233,7 @@ fun SettingsCategory(titulo: String = "", conteudo: @Composable () -> Unit) {
 fun SettingsOptionItem(
     icone: Painter,
     texto: String = "",
-    rota: String,
-    navController: NavHostController
+    navigateFunction: () -> Unit
 ) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(
@@ -229,9 +243,7 @@ fun SettingsOptionItem(
             .fillMaxWidth(fraction = 0.95f)
             .clip(RoundedCornerShape(10.dp))
             .clickable(
-                onClick = {
-                    navController.navigate(rota)
-                }
+                onClick = { navigateFunction() }
             )
     ) {
         Box(
@@ -345,7 +357,6 @@ fun SettingsOptionItemWithTrailing(
     }
 }
 
-
 @Composable
 fun BottomBarLogOut() {
     Box(
@@ -359,6 +370,7 @@ fun BottomBarLogOut() {
                     )
                 )
             )
+            .padding(vertical = 8.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

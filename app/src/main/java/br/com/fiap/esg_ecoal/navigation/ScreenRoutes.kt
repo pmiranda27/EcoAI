@@ -10,4 +10,9 @@ sealed class ScreenRoute(val route: String) {
     data object Settings : ScreenRoute("settings_screen")
     data object Idiomas : ScreenRoute("idiomas_screen")
     data object Sobre : ScreenRoute("sobre_screen")
+    data object ProgressoSetting : ScreenRoute("progresso_setting_screen/{conceitoEsg}"){
+        fun createRoute(conceitoEsg: String): String {
+            return "progresso_setting_screen/${conceitoEsg}"
+        }
+    }
 }
