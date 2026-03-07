@@ -333,7 +333,7 @@ fun BottomBarRedGradient(
                     )
                 )
             )
-            .padding(vertical = 8.dp),
+            .padding(vertical = 12.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

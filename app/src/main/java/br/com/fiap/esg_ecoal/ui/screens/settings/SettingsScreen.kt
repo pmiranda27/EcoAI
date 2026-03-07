@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,6 +28,9 @@ import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -34,7 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -71,10 +74,18 @@ fun SettingsScreen(navController: NavHostController) {
         mutableStateOf(false)
     }
 
+    var mostrarDialogDeslogar by remember {
+        mutableStateOf(false)
+    }
+
     Surface(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = { AppBarDefaultWithGoBackButton("Configurações", navController) },
-            bottomBar = { BottomBarLogOut() },
+            bottomBar = {
+                BottomBarLogOut() {
+                    mostrarDialogDeslogar = true
+                }
+            },
             containerColor = Color.LightGray
         ) { paddingValues ->
             Column(
@@ -202,6 +213,99 @@ fun SettingsScreen(navController: NavHostController) {
                         }
                     }
                 }
+            }
+        }
+        if (mostrarDialogDeslogar) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.80f))
+            ) {
+                AlertDialog(
+                    onDismissRequest = { mostrarDialogDeslogar = false },
+                    containerColor = Color.Transparent,
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 1f)
+                        .clip(shape = RoundedCornerShape(12.dp))
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.secondary,
+                                    MaterialTheme.colorScheme.tertiary
+                                )
+                            )
+                        ),
+                    confirmButton = {
+                        Button(
+                            onClick = {
+
+                            },
+                            contentPadding = PaddingValues(
+                                horizontal = 40.dp,
+                                vertical = 8.dp
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF53A73D).copy(1f), // verde
+                                contentColor = Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 6.dp
+                            )
+                        ) {
+                            Text(
+                                "Sim",
+                                style = TextStyle(
+                                    fontFamily = poppinsFamily,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.White,
+                                    fontSize = 22.sp
+                                )
+                            )
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = {
+                                mostrarDialogDeslogar = false
+                            },
+                            contentPadding = PaddingValues(horizontal = 40.dp, vertical = 8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFA62B3D).copy(1f), // verde
+                                contentColor = Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 6.dp
+                            )
+                        ) {
+                            Text(
+                                "Não",
+                                style = TextStyle(
+                                    fontFamily = poppinsFamily,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.White,
+                                    fontSize = 22.sp
+                                )
+                            )
+                        }
+                    },
+                    title = {
+                        Text(
+                            "Desconectar",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    },
+                    text = {
+                        Text(
+                            "Tem certeza que deseja se desconectar?",
+                            style = MaterialTheme.typography.displaySmall,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                )
             }
         }
     }
@@ -358,10 +462,13 @@ fun SettingsOptionItemWithTrailing(
 }
 
 @Composable
-fun BottomBarLogOut() {
+fun BottomBarLogOut(
+    onClick: () -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .background(
                 Brush.horizontalGradient(
                     listOf(
@@ -370,23 +477,14 @@ fun BottomBarLogOut() {
                     )
                 )
             )
-            .padding(vertical = 8.dp)
+            .padding(vertical = 12.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            TextButton(
-                onClick = {}
-            ) {
-                Text(
-                    text = stringResource(R.string.deslogar),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-        }
+        Text(
+            text = stringResource(R.string.deslogar),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 
