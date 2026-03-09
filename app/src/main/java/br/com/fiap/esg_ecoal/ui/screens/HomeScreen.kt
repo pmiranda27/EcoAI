@@ -1,42 +1,28 @@
 package br.com.fiap.esg_ecoal.ui.screens
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,22 +32,28 @@ import kotlin.math.sin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(onSettingsClick: () -> Unit = {}, onProfileClick: () -> Unit = {}) {
+    var selectedTimeframe by remember { mutableStateOf("Mensal") } // Armazena o filtro de tempo selecionado ("Mensal", "Trimestral", "Anual")
+    val uriHandler = LocalUriHandler.current // Permite abrir URLs de forma segura
+    var visible by remember { mutableStateOf(false) } // Controla a visibilidade da animação
+
+    LaunchedEffect(Unit) { visible = true } // Controla a animação ao montar a tela
+
     Scaffold(
-        topBar = {
+        topBar = { // Definição da barra superior (AppBar)
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.Transparent // Cor transparente no fundo da barra
                 ),
                 title = {
                     Text(
-                        text = "ECOAL",
+                        text = "ECOAL", // Título do app
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp
                     )
                 },
-                navigationIcon = {
+                navigationIcon = { // Ícone de configurações no canto esquerdo
                     IconButton(
-                        onClick = onSettingsClick,
+                        onClick = onSettingsClick, // Ação do clique no ícone de configurações
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -70,9 +62,9 @@ fun HomeScreen(onSettingsClick: () -> Unit = {}, onProfileClick: () -> Unit = {}
                         )
                     }
                 },
-                actions = {
+                actions = { // Ícone do perfil no canto direito
                     IconButton(
-                        onClick = onProfileClick,
+                        onClick = onProfileClick, // Ação do clique no ícone de perfil
                     ) {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
@@ -83,111 +75,199 @@ fun HomeScreen(onSettingsClick: () -> Unit = {}, onProfileClick: () -> Unit = {}
                 }
             )
         }
-    ) { innerPadding ->
+    ) { innerPadding -> // Espaçamento interno da tela, utilizado para evitar sobreposição com a barra
         Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding) // Adiciona espaçamento interno
+                .fillMaxSize() // Preenche toda a tela
+                .verticalScroll(rememberScrollState()) // Permite rolagem vertical
+                .padding(horizontal = 24.dp) // Adiciona padding nas bordas laterais
         ) {
-            Text(
-                text = "Juntos, nós podemos...",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.DarkGray,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 32.dp)
-            )
+            // 1. INTRODUÇÃO
+            Spacer(modifier = Modifier.height(16.dp)) // Espaço entre os elementos
+            Text(text = "Olá, User! 👋", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold) // Saudação
+            Text(text = "Veja o desempenho ESG da sua empresa", fontSize = 16.sp, color = Color.Gray) // Subtítulo informativo
 
-            EsgSection(title = "Environmental", percentage = 50f, color = Color(0xFFD35D6E))
-            EsgSection(title = "Social", percentage = 50f, color = Color(0xFF8A588B))
-            EsgSection(title = "Governance", percentage = 50f, color = Color(0xFF3E5271))
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 2. GRÁFICOS + FILTROS (DIRETAMENTE LIGADOS)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Text("Indicadores Críticos", fontWeight = FontWeight.Bold, fontSize = 18.sp) // Título da seção de indicadores
+            }
+
+            // Filtros colados nos gráficos
+            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf("Mensal", "Trimestral", "Anual").forEach { timeframe -> // Criação dos filtros de tempo
+                    FilterChip(
+                        selected = selectedTimeframe == timeframe, // Verifica se o filtro está selecionado
+                        onClick = { selectedTimeframe = timeframe }, // Muda o filtro de tempo
+                        label = { Text(timeframe) }, // Texto que aparece no filtro
+                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Color(0xFF3E5271), selectedLabelColor = Color.White) // Cores personalizadas para o filtro selecionado
+                    )
+                }
+            }
+
+            AnimatedVisibility(visible = visible, enter = fadeIn() + slideInVertically()) { // Animação de entrada
+                Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                    EsgSection("Environmental", 72f, "+4.2%", true, Color(0xFFD35D6E)) // Seção com dados ambientais
+                    EsgSection("Social", 58f, "-1.5%", false, Color(0xFF8A588B)) // Seção com dados sociais
+                    EsgSection("Governance", 15f, "+10.0%", true, Color(0xFF3E5271)) // Seção com dados de governança
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 3. SCORE ESG (AGORA EMBAIXO DO GRÁFICO)
+            Text("Resultado Consolidado", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(bottom = 12.dp)) // Título do resultado consolidado
+            ScoreCard(720, 1000, "Maturidade Nível 3") // Exibe o card com o resultado do ESG
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 4. AÇÕES RÁPIDAS
+            Text("Gestão Operacional", fontWeight = FontWeight.Bold, fontSize = 18.sp) // Título da seção de ações rápidas
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { // Ações rápidas com ícones
+                QuickActionItem(Modifier.weight(1f), "Metas Equipe", Icons.Default.Groups) // Ação "Metas Equipe"
+                QuickActionItem(Modifier.weight(1f), "Relatórios", Icons.Default.Description) // Ação "Relatórios"
+            }
+
+            // 5. RADAR DE NOTÍCIAS
+            Spacer(modifier = Modifier.height(32.dp))
+            Text("Radar de Notícias ESG", fontWeight = FontWeight.Bold, fontSize = 18.sp) // Título da seção de notícias ESG
+
+            // Notícias clicáveis
+            NewsCard("Exame", "Nova taxonomia verde: O que muda para as empresas.") { uriHandler.openUri("https://exame.com/esg/") }
+            NewsCard("Nações Unidas", "ODS Brasil: Relatório de transparência 2026.") { uriHandler.openUri("https://brasil.un.org/pt-br/sdgs") }
+            NewsCard("Valor Econômico", "Governança e valor de mercado em alta.") { uriHandler.openUri("https://valor.globo.com/esg/") }
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
 
+// Componente para exibir a seção de cada indicador ESG com animação e gráfico
 @Composable
-fun EsgSection(title: String, percentage: Float, color: Color) {
-    val percentValue = percentage / 100f
-    
-    val infiniteTransition = rememberInfiniteTransition(label = "wave")
+fun EsgSection(title: String, percentage: Float, trend: String, isUp: Boolean, color: Color) {
+    val infiniteTransition = rememberInfiniteTransition(label = "wave") // Controla a animação de onda
     val waveOffset by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
+        initialValue = 0f, targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(3000, easing = LinearEasing), RepeatMode.Restart),
         label = "waveOffset"
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 24.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = color,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+    Column {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Gray) // Título da seção
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = if (isUp) Icons.Default.TrendingUp else Icons.Default.TrendingDown,
+                    contentDescription = null,
+                    tint = if (isUp) Color(0xFF2E7D32) else Color(0xFFD32F2F),
+                    modifier = Modifier.size(16.dp)
+                )
+                Text(trend, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = if (isUp) Color(0xFF2E7D32) else Color(0xFFD32F2F)) // Tendência do indicador
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(140.dp),
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            modifier = Modifier.fillMaxWidth().height(110.dp),
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(1.dp, color.copy(alpha = 0.2f))
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.Center
-            ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
+            Box(contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize().background(color.copy(alpha = 0.12f))) // Fundo da seção com a cor customizada
+                Canvas(modifier = Modifier.fillMaxSize()) { // Gráfico animado
                     val width = size.width
                     val height = size.height
-                    val fillHeight = height * percentValue
-                    val waveAmplitude = 8.dp.toPx()
-
+                    val fillHeight = height * (percentage / 100f)
                     val path = Path().apply {
                         val baseHeight = height - fillHeight
                         moveTo(0f, height)
                         lineTo(0f, baseHeight)
-                        
-                        for (x in 0..width.toInt() step 2) {
+                        for (x in 0..width.toInt() step 5) {
                             val relativeX = x / width
-                            val y = baseHeight + sin((relativeX + waveOffset) * 2 * Math.PI).toFloat() * waveAmplitude
+                            val y = baseHeight + sin((relativeX + waveOffset) * 2 * Math.PI).toFloat() * 8.dp.toPx()
                             lineTo(x.toFloat(), y)
                         }
-                        
                         lineTo(width, height)
                         close()
                     }
-                    drawPath(path, color = color)
+                    drawPath(path, color = color) // Desenha o gráfico animado
                 }
-
-                Text(
-                    text = "${percentage.toInt()}%",
-                    fontSize = 56.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.White
-                )
+                Text("${percentage.toInt()}%", fontSize = 44.sp, fontWeight = FontWeight.Black, color = Color.White) // Exibe a porcentagem
             }
         }
     }
 }
 
+// Componente para exibir o card com o score do ESG
+@Composable
+fun ScoreCard(current: Int, target: Int, level: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF3E5271)) // Cor do card
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                Column {
+                    Text("Score ESG Atual", color = Color.White.copy(0.7f), fontSize = 14.sp)
+                    Text("$current", color = Color.White, fontSize = 36.sp, fontWeight = FontWeight.Bold) // Exibe o score atual
+                }
+                Surface(color = Color.White.copy(0.2f), shape = RoundedCornerShape(8.dp)) {
+                    Text(level, color = Color.White, modifier = Modifier.padding(8.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold) // Nível do score ESG
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            LinearProgressIndicator(
+                progress = current.toFloat() / target, // Barra de progresso
+                modifier = Modifier.fillMaxWidth().height(8.dp).background(Color.White.copy(0.1f), CircleShape),
+                color = Color(0xFF4CAF50), // Cor da barra
+                trackColor = Color.Transparent // Cor do fundo da barra
+            )
+            Text("Meta da Empresa: $target pontos", color = Color.White.copy(0.6f), fontSize = 12.sp, modifier = Modifier.padding(top = 8.dp))
+        }
+    }
+}
+
+// Componente para exibir um item de ação rápida
+@Composable
+fun QuickActionItem(modifier: Modifier, label: String, icon: ImageVector) {
+    Card(
+        modifier = modifier.height(90.dp).clickable { },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+        border = BorderStroke(1.dp, Color(0xFFEEEEEE))
+    ) {
+        Column(modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+            Icon(icon, null, tint = Color(0xFF3E5271), modifier = Modifier.size(28.dp)) // Ícone da ação rápida
+            Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF3E5271), modifier = Modifier.padding(top = 8.dp)) // Texto da ação rápida
+        }
+    }
+}
+
+// Componente para exibir as notícias ESG
+@Composable
+fun NewsCard(source: String, title: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp).clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = BorderStroke(1.dp, Color(0xFFF0F0F0)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(source.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Black, color = Color(0xFF3E5271)) // Fonte da notícia
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis) // Título da notícia
+            }
+            Icon(Icons.Default.ChevronRight, null, tint = Color.LightGray) // Ícone para indicar mais informações
+        }
+    }
+}
+
+// Preview para visualizar a tela no Android Studio
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    ESGEcoalTheme {
-        HomeScreen()
-    }
+    ESGEcoalTheme { HomeScreen() } // Exibe a HomeScreen no preview
 }
