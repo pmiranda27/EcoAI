@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,16 +103,19 @@ fun HomeScreen(onSettingsClick: () -> Unit = {}, onProfileClick: () -> Unit = {}
                         selected = selectedTimeframe == timeframe, // Verifica se o filtro está selecionado
                         onClick = { selectedTimeframe = timeframe }, // Muda o filtro de tempo
                         label = { Text(timeframe) }, // Texto que aparece no filtro
-                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Color(0xFF3E5271), selectedLabelColor = Color.White) // Cores personalizadas para o filtro selecionado
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = colorScheme.primary, // Rosa selecionado
+                            selectedLabelColor = colorScheme.onPrimary // Texto contrastante
+                        )
                     )
                 }
             }
 
             AnimatedVisibility(visible = visible, enter = fadeIn() + slideInVertically()) { // Animação de entrada
                 Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                    EsgSection("Environmental", 72f, "+4.2%", true, Color(0xFFD35D6E)) // Seção com dados ambientais
-                    EsgSection("Social", 58f, "-1.5%", false, Color(0xFF8A588B)) // Seção com dados sociais
-                    EsgSection("Governance", 15f, "+10.0%", true, Color(0xFF3E5271)) // Seção com dados de governança
+                    EsgSection("Environmental", 72f, "+4.2%", true, colorScheme.secondary) // Seção com dados ambientais
+                    EsgSection("Social", 58f, "-1.5%", false, colorScheme.tertiary) // Seção com dados sociais
+                    EsgSection("Governance", 15f, "+10.0%", true, colorScheme.onPrimaryContainer) // Seção com dados de governança
                 }
             }
 
@@ -206,7 +210,7 @@ fun ScoreCard(current: Int, target: Int, level: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3E5271)) // Cor do card
+        colors = CardDefaults.cardColors(containerColor = colorScheme.primary) // Cor do card
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
@@ -236,12 +240,12 @@ fun QuickActionItem(modifier: Modifier, label: String, icon: ImageVector) {
     Card(
         modifier = modifier.height(90.dp).clickable { },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
-        border = BorderStroke(1.dp, Color(0xFFEEEEEE))
+        colors = CardDefaults.cardColors(containerColor = colorScheme.primary.copy(alpha = 0.60f)),
+        border = BorderStroke(1.dp, colorScheme.primary)
     ) {
         Column(modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
-            Icon(icon, null, tint = Color(0xFF3E5271), modifier = Modifier.size(28.dp)) // Ícone da ação rápida
-            Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF3E5271), modifier = Modifier.padding(top = 8.dp)) // Texto da ação rápida
+            Icon(icon, null, tint = colorScheme.onPrimary, modifier = Modifier.size(28.dp)) // Ícone da ação rápida
+            Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = colorScheme.onPrimary, modifier = Modifier.padding(top = 8.dp)) // Texto da ação rápida
         }
     }
 }
@@ -252,12 +256,12 @@ fun NewsCard(source: String, title: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(top = 12.dp).clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Color(0xFFF0F0F0)),
+        border = BorderStroke(1.dp, Color.LightGray),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(source.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Black, color = Color(0xFF3E5271)) // Fonte da notícia
+                Text(source.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Black, color = colorScheme.primary) // Fonte da notícia
                 Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis) // Título da notícia
             }
             Icon(Icons.Default.ChevronRight, null, tint = Color.LightGray) // Ícone para indicar mais informações

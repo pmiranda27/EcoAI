@@ -5,56 +5,23 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,440 +30,197 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.navigation.ScreenRoute
-import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
-import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavHostController) {
-    var temaEscuro by remember {
-        mutableStateOf(false)
-    }
+    var mostrarDialogDeslogar by remember { mutableStateOf(false) }
 
-    var mostrarDialogDeslogar by remember {
-        mutableStateOf(false)
-    }
+    // Pegando as cores direto do seu MaterialTheme (Rosa)
+    val colorScheme = MaterialTheme.colorScheme
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            topBar = { AppBarDefaultWithGoBackButton("Configurações", navController) },
-            bottomBar = {
-                BottomBarLogOut() {
-                    mostrarDialogDeslogar = true
-                }
-            },
-            containerColor = Color.LightGray
-        ) { paddingValues ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(paddingValues)
+    Scaffold(
+        containerColor = colorScheme.surfaceVariant.copy(alpha = 0.3f), // Fundo suave baseado no tema
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        "Configurações",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorScheme.primary
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Voltar", tint = colorScheme.primary)
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
+            )
+        },
+        bottomBar = {
+            Surface(
+                modifier = Modifier.fillMaxWidth().clickable { mostrarDialogDeslogar = true },
+                color = Color.White,
+                shadowElevation = 8.dp
             ) {
-                ElevatedCard(
-                    colors = CardDefaults.elevatedCardColors(
-                        containerColor = Color.White
-                    ),
-                    shape = RectangleShape,
-                    elevation = CardDefaults.elevatedCardElevation(
-                        defaultElevation = 6.dp,
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
+                Box(modifier = Modifier.padding(20.dp), contentAlignment = Alignment.Center) {
+                    Text("Sair da Conta", color = colorScheme.error, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            // --- HEADER DE PERFIL ---
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.White,
+                shadowElevation = 1.dp
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 32.dp)
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .padding(vertical = 12.dp)
-                            .fillMaxWidth()
-                    ) {
+                    Box(contentAlignment = Alignment.BottomEnd) {
                         Image(
                             painter = painterResource(R.drawable.no_photo),
-                            contentDescription = "Foto do Usuário",
+                            contentDescription = "Foto",
                             modifier = Modifier
-                                .size(140.dp)
-                                .border(
-                                    BorderStroke(
-                                        3.dp,
-                                        Brush.horizontalGradient(
-                                            colors = listOf(
-                                                MaterialTheme.colorScheme.secondary,
-                                                MaterialTheme.colorScheme.tertiary
-                                            )
-                                        )
-                                    ),
-                                    shape = CircleShape
-                                )
-                                .clip(CircleShape),
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, colorScheme.primary, CircleShape),
                             contentScale = ContentScale.Crop
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Olá, ${"Fulaninho"}!",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.Black
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                LazyColumn() {
-                    item {
-                        SettingsCategory(stringResource(R.string.preferencias))
-                        {
-                            SettingsOptionItemWithTrailing(
-                                icone = Icons.Default.Lightbulb,
-                                texto = "Tema",
-                                rota = "",
-                                navController = navController,
-                                changeTheme = {})
-                            Spacer(modifier = Modifier.height(8.dp))
-                            SettingsOptionItemWithTrailing(
-                                icone = Icons.Default.Language, "Idioma",
-                                rota = ScreenRoute.Idiomas.route,
-                                navController = navController
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
-
-                    item {
-                        SettingsCategory("Progresso — ESG") {
-                            SettingsOptionItem(
-                                icone = painterResource(R.drawable.folha_verde),
-                                texto = "Ambiental",
-                                navigateFunction = {
-                                    navController.navigate(
-                                        ScreenRoute.ProgressoSetting.createRoute(
-                                            "Environmental"
-                                        )
-                                    )
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            SettingsOptionItem(
-                                icone = painterResource(R.drawable.mao_vermelha),
-                                texto = "Social",
-                                navigateFunction = {
-                                    navController.navigate(
-                                        ScreenRoute.ProgressoSetting.createRoute(
-                                            "Social"
-                                        )
-                                    )
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            SettingsOptionItem(
-                                icone = painterResource(R.drawable.governanca_laranja),
-                                texto = "Governança",
-                                navigateFunction = {
-                                    navController.navigate(
-                                        ScreenRoute.ProgressoSetting.createRoute(
-                                            "Governance"
-                                        )
-                                    )
-                                }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
-
-                    item {
-                        SettingsCategory("Sobre")
-                        {
-                            SettingsOptionItemWithTrailing(
-                                icone = Icons.Default.ErrorOutline,
-                                texto = "Sobre",
-                                rota = ScreenRoute.Sobre.route,
-                                navController = navController
-                            )
+                        Surface(
+                            color = colorScheme.primary,
+                            shape = CircleShape,
+                            modifier = Modifier.size(28.dp).border(2.dp, Color.White, CircleShape)
+                        ) {
+                            Icon(Icons.Default.Edit, null, tint = colorScheme.onPrimary, modifier = Modifier.padding(6.dp))
                         }
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("User", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = colorScheme.primary)
+                    Text("User@empresa.com.br", fontSize = 14.sp, color = colorScheme.onSurfaceVariant)
                 }
             }
-        }
-        if (mostrarDialogDeslogar) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.80f))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // --- CATEGORIAS ---
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                AlertDialog(
-                    onDismissRequest = { mostrarDialogDeslogar = false },
-                    containerColor = Color.Transparent,
-                    modifier = Modifier
-                        .fillMaxWidth(fraction = 1f)
-                        .clip(shape = RoundedCornerShape(12.dp))
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.secondary,
-                                    MaterialTheme.colorScheme.tertiary
-                                )
-                            )
-                        ),
-                    confirmButton = {
-                        Button(
-                            onClick = {
+                SettingsCategory("CONTA E PREFERÊNCIAS", colorScheme.primary) {
+                    SettingsOptionItem(Icons.Default.Person, "Dados Pessoais") { }
+                    SettingsOptionItem(Icons.Default.Lightbulb, "Tema do Aplicativo") { }
+                    SettingsOptionItem(Icons.Default.Language, "Idioma") { }
+                }
 
-                            },
-                            contentPadding = PaddingValues(
-                                horizontal = 40.dp,
-                                vertical = 8.dp
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF53A73D).copy(1f), // verde
-                                contentColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            elevation = ButtonDefaults.buttonElevation(
-                                defaultElevation = 6.dp
-                            )
-                        ) {
-                            Text(
-                                "Sim",
-                                style = TextStyle(
-                                    fontFamily = poppinsFamily,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = Color.White,
-                                    fontSize = 22.sp
-                                )
-                            )
-                        }
-                    },
-                    dismissButton = {
-                        Button(
-                            onClick = {
-                                mostrarDialogDeslogar = false
-                            },
-                            contentPadding = PaddingValues(horizontal = 40.dp, vertical = 8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFA62B3D).copy(1f), // verde
-                                contentColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            elevation = ButtonDefaults.buttonElevation(
-                                defaultElevation = 6.dp
-                            )
-                        ) {
-                            Text(
-                                "Não",
-                                style = TextStyle(
-                                    fontFamily = poppinsFamily,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = Color.White,
-                                    fontSize = 22.sp
-                                )
-                            )
-                        }
-                    },
-                    title = {
-                        Text(
-                            "Desconectar",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    },
-                    text = {
-                        Text(
-                            "Tem certeza que deseja se desconectar?",
-                            style = MaterialTheme.typography.displaySmall,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+                SettingsCategory("PROGRESSO — ESG", colorScheme.primary) {
+                    SettingsOptionItem(Icons.Default.Eco, "Indicadores Ambientais") {
+                        navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Environmental"))
                     }
-                )
+                    SettingsOptionItem(Icons.Default.Groups, "Indicadores Sociais") {
+                        navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Social"))
+                    }
+                    SettingsOptionItem(Icons.Default.AccountBalance, "Governança Corporativa") {
+                        navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Governance"))
+                    }
+                }
+
+                SettingsCategory("SUPORTE", colorScheme.primary) {
+                    SettingsOptionItem(Icons.Default.Info, "Sobre o EcoAI") {
+                        navController.navigate(ScreenRoute.Sobre.route)
+                    }
+                }
             }
+            Spacer(modifier = Modifier.height(40.dp))
         }
+    }
+
+    if (mostrarDialogDeslogar) {
+        AlertDialog(
+            onDismissRequest = { mostrarDialogDeslogar = false },
+            title = { Text("Desconectar", color = colorScheme.primary) },
+            text = { Text("Tem certeza que deseja sair da sua conta?") },
+            confirmButton = {
+                TextButton(onClick = { /* Logout */ }) {
+                    Text("Sim, sair", color = colorScheme.error, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarDialogDeslogar = false }) {
+                    Text("Cancelar", color = colorScheme.onSurfaceVariant)
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(24.dp)
+        )
     }
 }
 
-
 @Composable
-fun SettingsCategory(titulo: String = "", conteudo: @Composable () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
+fun SettingsCategory(titulo: String, primaryColor: Color, conteudo: @Composable ColumnScope.() -> Unit) {
+    Column {
         Text(
             text = titulo,
-            modifier = Modifier
-                .align(Alignment.Start),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = primaryColor.copy(alpha = 0.7f),
+            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        conteudo()
+        Card(
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, Color(0xFFEEEEEE))
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                conteudo()
+            }
+        }
     }
 }
 
 @Composable
 fun SettingsOptionItem(
-    icone: Painter,
-    texto: String = "",
-    navigateFunction: () -> Unit
+    icone: ImageVector,
+    texto: String,
+    onClick: () -> Unit
 ) {
-    ElevatedCard(
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 80.dp,
-        ),
-        modifier = Modifier
-            .fillMaxWidth(fraction = 0.95f)
-            .clip(RoundedCornerShape(10.dp))
-            .clickable(
-                onClick = { navigateFunction() }
-            )
-    ) {
-        Box(
-            modifier = Modifier
-                .background(Color.White)
-                .fillMaxWidth()
-                .height(50.dp)
-                .padding(vertical = 4.dp, horizontal = 12.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = icone,
-                    modifier = Modifier
-                        .size(30.dp),
-                    contentDescription = texto
-                )
-                Text(
-                    text = texto,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .fillMaxWidth(fraction = 0.85f),
-                    style = TextStyle(
-                        fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                        lineHeight = 16.sp,
-                        letterSpacing = 0.sp
-                    )
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun SettingsOptionItemWithTrailing(
-    icone: ImageVector = Icons.Default.Error,
-    texto: String = "",
-    changeTheme: (() -> Unit)? = null,
-    temaEscuro: Boolean = false,
-    rota: String,
-    navController: NavHostController
-) {
-    ElevatedCard(
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 20.dp,
-        ),
-        modifier = Modifier
-            .fillMaxWidth(fraction = 0.95f)
-            .clip(RoundedCornerShape(10.dp))
-            .clickable(
-                onClick = {
-                    navController.navigate(rota)
-                }
-            )
-    ) {
-        Box(
-            modifier = Modifier
-                .background(Color.White)
-                .fillMaxWidth()
-                .height(50.dp)
-                .padding(vertical = 4.dp, horizontal = 12.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = icone,
-                    contentDescription = "Ícone da opção ${texto}",
-                    modifier = Modifier
-                        .fillMaxHeight(),
-                    tint = Color.Black,
-                )
-                Text(
-                    text = texto,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .fillMaxWidth(fraction = 0.75f),
-                    style = TextStyle(
-                        fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                        lineHeight = 16.sp,
-                        letterSpacing = 0.sp
-                    )
-                )
-                if (changeTheme == null) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                        contentDescription = "Opção Clicável",
-                    )
-                } else {
-                    Icon(
-                        imageVector = if (temaEscuro) Icons.Default.DarkMode else Icons.Default.LightMode,
-                        contentDescription = "Botão de Trocar Tema",
-                        tint = Color.Black,
-                        modifier = Modifier
-                            .fillMaxHeight(0.95f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun BottomBarLogOut(
-    onClick: () -> Unit = {}
-) {
-    Box(
+    val primaryColor = MaterialTheme.colorScheme.primary
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .background(
-                Brush.horizontalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.secondary,
-                        MaterialTheme.colorScheme.inversePrimary
-                    )
-                )
-            )
-            .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = stringResource(R.string.deslogar),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Surface(
+                color = primaryColor.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.size(36.dp)
+            ) {
+                Icon(icone, null, tint = primaryColor, modifier = Modifier.padding(8.dp))
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(texto, fontSize = 15.sp, fontWeight = FontWeight.Medium, color = Color(0xFF2D2D2D))
+        }
+        Icon(Icons.Default.ChevronRight, null, tint = primaryColor.copy(alpha = 0.3f), modifier = Modifier.size(20.dp))
     }
 }
 
-@Preview
-@Composable
-private fun PreviewBottomBarLogOut() {
-    ESGEcoalTheme {
-        BottomBarLogOut()
-    }
-}
-
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun PreviewSettingsScreen() {
     ESGEcoalTheme {
