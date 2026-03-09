@@ -120,7 +120,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
             ) {
-                Text("ENTRAR", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.inversePrimary)
+                Text("ENTRAR", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))

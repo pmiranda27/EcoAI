@@ -20,7 +20,7 @@ fun SplashBackground(alpha: Float) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Imagem com efeito de Blur
         Image(
-            painter = painterResource(id = R.drawable.flowers3),
+            painter = painterResource(id = R.drawable.pink_flowers),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()

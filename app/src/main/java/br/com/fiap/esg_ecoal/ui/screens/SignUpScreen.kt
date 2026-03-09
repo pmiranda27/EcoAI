@@ -133,7 +133,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-                val iconColor = if (passwordVisible) MaterialTheme.colorScheme.inversePrimary else Color.Gray.copy(alpha = 0.5f)
+                val iconColor = if (passwordVisible) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
                         painter = painterResource(id = br.com.fiap.esg_ecoal.R.drawable.eye),
@@ -156,7 +156,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
             Checkbox(
                 checked = isAccepted,                    // Valor lido da variável 'isAccepted'
                 onCheckedChange = { isAccepted = it },   // Atualiza o estado ao clicar no quadrado
-                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.inversePrimary) // Check roxo
+                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary) // Check rosa
             )
 
             Text(
@@ -179,7 +179,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
                 .height(56.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.inversePrimary, // Roxo se ativado
+                containerColor = MaterialTheme.colorScheme.primary, // Rosa se ativado
                 disabledContainerColor = Color.LightGray                   // Cinza se desativado
             )
         ) {
