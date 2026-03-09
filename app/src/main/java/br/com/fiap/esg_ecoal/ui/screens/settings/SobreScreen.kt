@@ -1,298 +1,341 @@
 package br.com.fiap.esg_ecoal.ui.screens.settings
 
-import android.content.Context
-import android.content.Intent
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+// Imports de animações
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+
+// Imports de componentes básicos de UI
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+
+// Ícones do Material Design
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+
+// Componentes do Material 3
+import androidx.compose.material3.*
+
+// Gerenciamento de estado do Compose
+import androidx.compose.runtime.*
+
+// Ferramentas de layout e posicionamento
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+
+// Classes relacionadas a cores
+import androidx.compose.ui.graphics.Color
+
+// Controle de escala de imagens
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+
+// Permite abrir links externos
+import androidx.compose.ui.platform.LocalUriHandler
+
+// Permite carregar imagens da pasta drawable
 import androidx.compose.ui.res.painterResource
+
+// Configurações de texto
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+
+// Preview da tela dentro do Android Studio
 import androidx.compose.ui.tooling.preview.Preview
+
+// Unidades de medida (dp e sp)
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+// Navegação entre telas
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+
+// Import dos recursos do projeto
 import br.com.fiap.esg_ecoal.R
+
+// Import da AppBar
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
+
+// Tema do aplicativo
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
-import androidx.core.net.toUri
 
-data class DesenvolvedorModel(
-    val nome: String,
-    val sala: String,
-    val github: String,
-    val linkedin: String,
-    val foto: Int = R.drawable.no_photo
-)
 
+// Composable principal da tela Sobre
 @Composable
 fun SobreScreen(navController: NavHostController) {
-    val objetivoParagrafo = "EcoAl é uma plataforma corporativa desenvolvida no ecossistema educacional da FIAP com o objetivo de auxiliar empresas na gestão de práticas de ESG (Environmental, Social and Governance). A aplicação centraliza o acompanhamento de indicadores socioambientais, metas organizacionais e métricas de sustentabilidade, além de utilizar elementos de gamificação para incentivar o engajamento de colaboradores e promover maior transparência na gestão e no compartilhamento de dados."
-    val contextoParagrafo = "O desenvolvimento do EcoAl ocorreu no contexto acadêmico da FIAP, como parte de um projeto educacional voltado à aplicação prática de conhecimentos em tecnologia e desenvolvimento de software. A proposta foi criar uma solução que simulasse um cenário real do mercado corporativo, permitindo a aplicação de conceitos de desenvolvimento, design de interfaces e organização de sistemas enquanto se abordava um tema atual e relevante: a gestão de práticas ESG dentro das organizações."
 
-    val contexto = LocalContext.current
+    // Estado usado para controlar o scroll vertical da tela
+    val scrollState = rememberScrollState()
 
-    val desenvolvedores = listOf(
-        DesenvolvedorModel("Pedro", "2TDSOA", "https://github.com/pmiranda27", "https://www.linkedin.com/in/pedro-miranda-dev27/"),
-        DesenvolvedorModel("Beatriz", "2TDSOA", "https://github.com/lotouux", "https://www.linkedin.com/in/beatriz-camargo-serafini-b8b667349/"),
-        DesenvolvedorModel("Leonardo", "2TDSOA", "https://github.com/ruivoomt", "https://www.linkedin.com/in/leonardo-martin-moncao/"),
-        DesenvolvedorModel("Andy", "2TDSOA", "https://github.com/saanmendes", "https://www.linkedin.com/in/sandra-mendes-55a5012b2/"),
-        DesenvolvedorModel("Lucas", "2TDSOA", "https://github.com/lucas-silveira", "https://www.linkedin.com/in/lucas-silveira/"),
-    )
+    // Variável de estado que controla a animação de entrada
+    var visible by remember { mutableStateOf(false) }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            topBar = { AppBarDefaultWithGoBackButton("Sobre", navController) }
-        ) { paddingValues ->
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
+    // Quando a tela é carregada, a animação ativa
+    LaunchedEffect(Unit) { visible = true }
+
+    // Estrutura base da tela com AppBar no topo
+    Scaffold(
+        topBar = { AppBarDefaultWithGoBackButton("Sobre o EcoAl", navController) },
+        containerColor = Color.White
+    ) { paddingValues ->
+
+        // Coluna principal que organiza todos os elementos verticalmente
+        Column(
+            modifier = Modifier
+                .fillMaxSize() // ocupa toda a tela
+                .padding(paddingValues) // respeita o espaço da AppBar
+                .verticalScroll(scrollState) // permite rolagem
+                .padding(horizontal = 24.dp), // espaçamento lateral
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Animação de entrada do ícone superior
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn(tween(1000)) + scaleIn(tween(800))
             ) {
-                item { CardTextoSobre("Objetivo", paragrafo = objetivoParagrafo) }
-                item { CardTextoSobre("Contexto de Desenvolvimento", paragrafo = contextoParagrafo) }
-                item {
-                    Column(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                    ){
-                        Text(
-                            text = "Equipe",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(desenvolvedores) { desenvolvedor ->
-                                CardIntegranteEquipe(
-                                    nome = desenvolvedor.nome,
-                                    sala = desenvolvedor.sala,
-                                    github = desenvolvedor.github,
-                                    linkedin = desenvolvedor.linkedin,
-                                    imagem = desenvolvedor.foto,
-                                    contexto = contexto
-                                )
-                            }
-                        }
-                    }
+
+                // Caixa circular que contém o ícone de planta
+                Box(
+                    modifier = Modifier
+                        .size(160.dp)
+                        .background(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                            CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+
+                    // Ícone de planta central
+                    Icon(
+                        imageVector = Icons.Default.Eco,
+                        contentDescription = null,
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Seção que explica o objetivo do aplicativo
+            SectionLayout(visible = visible, delay = 200, title = "Nosso Objetivo") {
+
+                Text(
+                    text = "O EcoAl é uma plataforma corporativa desenvolvida na FIAP para auxiliar empresas na gestão de práticas ESG. Centralizamos indicadores, metas e métricas de sustentabilidade com gamificação para engajar colaboradores.",
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    color = Color(0xFF444444),
+                    textAlign = TextAlign.Justify
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Seção explicando o contexto acadêmico do projeto
+            SectionLayout(visible = visible, delay = 400, title = "Contexto de Desenvolvimento") {
+
+                Text(
+                    text = "Projeto acadêmico focado na aplicação prática de tecnologia e design, simulando cenários reais do mercado corporativo e abordando a transparência na gestão sustentável.",
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    color = Color(0xFF444444),
+                    textAlign = TextAlign.Justify
+                )
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // Título da seção de criadores do projeto
+            Text(
+                text = "Criadores do Projeto",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start),
+                color = Color(0xFF1A1A1A)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Cards com os integrantes do projeto
+            CriadorCard(
+                nome = "Beatriz Camargo",
+                cargo = "Estudante de ADS",
+                github = "https://github.com/lotouux",
+                linkedin = "https://www.linkedin.com/in/beatriz-camargo-serafini/",
+                photo = R.drawable.bea
+            )
+
+            CriadorCard(
+                nome = "Leonardo Martin",
+                cargo = "Estudante de ADS",
+                github = "https://github.com/ruivoomt",
+                linkedin = "https://www.linkedin.com/in/leonardo-martin-moncao/",
+                photo = R.drawable.leo
+            )
+
+            CriadorCard(
+                nome = "Sandra Mendes",
+                cargo = "Estudante de ADS",
+                github = "https://github.com/saanmendes",
+                linkedin = "https://www.linkedin.com/in/sandra-mendes-55a5012b2/",
+                photo = R.drawable.andy
+            )
+
+            CriadorCard(
+                nome = "Lucas Silveira",
+                cargo = "Estudante de ADS",
+                github = "https://github.com/lucas-silveira",
+                linkedin = "https://www.linkedin.com/in/lucas-silveira/",
+                photo = R.drawable.lucas
+            )
+
+            CriadorCard(
+                nome = "Pedro Miranda",
+                cargo = "Estudante de ADS",
+                github = "https://github.com/pmiranda27",
+                linkedin = "https://www.linkedin.com/in/pedro-miranda-dev27/",
+                photo = R.drawable.miranda
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+        }
+    }
+}
+
+
+// Componente reutilizável para criar seções com título e conteúdo
+@Composable
+fun SectionLayout(
+    visible: Boolean,
+    delay: Int,
+    title: String,
+    content: @Composable () -> Unit
+) {
+
+    // Animação de entrada da seção
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically(tween(800, delay)) { it / 2 } + fadeIn(tween(800, delay))
+    ) {
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+
+            // Título da seção
+            Text(
+                text = title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            // Conteúdo da seção
+            content()
+        }
+    }
+}
+
+
+// Card que representa cada integrante do projeto
+@Composable
+fun CriadorCard(
+    nome: String,
+    cargo: String,
+    github: String,
+    linkedin: String,
+    photo: Int
+) {
+
+    // Permite abrir links externos
+    val uriHandler = LocalUriHandler.current
+
+    // Card visual do integrante
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+
+        shape = RoundedCornerShape(16.dp),
+
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBFBFB)),
+
+        border = BorderStroke(1.dp, Color(0xFFEEEEEE))
+    ) {
+
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            // Foto circular do integrante
+            Image(
+                painter = painterResource(id = photo),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Nome e cargo do integrante
+            Column(modifier = Modifier.weight(1f)) {
+
+                Text(
+                    text = nome,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+
+                Text(
+                    text = cargo,
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            }
+
+            // Botões de redes sociais
+            Row {
+
+                // Botão GitHub
+                IconButton(onClick = { uriHandler.openUri(github) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.github),
+                        contentDescription = "GitHub",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                // Botão LinkedIn
+                IconButton(onClick = { uriHandler.openUri(linkedin) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.linkedin),
+                        contentDescription = "LinkedIn",
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
+                    )
                 }
             }
         }
     }
 }
 
-@Composable
-fun CardTextoSobre(titulo: String = "", paragrafo: String = "") {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(fraction = 0.90f)
-            .border(
-                BorderStroke(
-                    3.dp,
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.secondary
-                        )
-                    )
-                ),
-                shape = RoundedCornerShape(16.dp)
-            )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(12.dp)
-        ) {
-            Text(
-                text = titulo,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text(
-                text = paragrafo,
-                textAlign = TextAlign.Justify,
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-    }
-}
 
+// Preview da tela dentro do Android Studio
+@Preview(showBackground = true)
 @Composable
-fun CardIntegranteEquipe(
-    nome: String = "",
-    sala: String = "",
-    github: String = "",
-    linkedin: String = "",
-    imagem: Int,
-    contexto: Context
-) {
-    ElevatedCard(
-        modifier = Modifier
-            .border(
-                BorderStroke(
-                    3.dp,
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.secondary
-                        )
-                    )
-                ),
-                shape = RoundedCornerShape(16.dp)
-            )
-            .padding(horizontal = 12.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp),
-//            verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(imagem),
-                contentDescription = "Foto do desenvolvedor ${nome}",
-                modifier = Modifier
-                    .size(130.dp)
-                    .border(
-                        BorderStroke(
-                            3.dp,
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.secondary,
-                                    MaterialTheme.colorScheme.tertiary
-                                )
-                            )
-                        ),
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-            Text(
-                text = nome,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = sala,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Image(
-                    painter = painterResource(R.drawable.icone_github),
-                    contentDescription = "Github do desenvolvedor ${nome}",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clickable(
-                            onClick = {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    github.toUri()
-                                )
-                                contexto.startActivity(intent)
-                            }
-                        )
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Image(
-                    painter = painterResource(R.drawable.icone_linkedin),
-                    contentDescription = "Linkedin do desenvolvedor ${nome}",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clickable(
-                            onClick = {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    linkedin.toUri()
-                                )
-                                contexto.startActivity(intent)
-                            }
-                        )
-                )
-            }
-        }
-    }
-}
+fun PreviewSobreScreen() {
 
-@Preview(
-    showBackground = true
-)
-@Composable
-private fun PreviewCardTextSobre() {
+    // Aplica o tema do aplicativo no preview
     ESGEcoalTheme {
-        CardTextoSobre("TITULO", "PARAGRAFO")
-    }
-}
 
-@Preview(
-    showBackground = true
-)
-@Composable
-private fun PreviewCardIntegranteEquipe() {
-    ESGEcoalTheme {
-        CardIntegranteEquipe(
-            nome = "Fulano",
-            sala = "Sala 1",
-            github = "github.com",
-            linkedin = "linkedin.com",
-            imagem = R.drawable.no_photo,
-            contexto = LocalContext.current
-        )
-    }
-}
-
-@Preview(
-    showBackground = true
-)
-@Composable
-private fun PreviewSobreScreen() {
-    ESGEcoalTheme {
-        SobreScreen(navController = rememberNavController())
+        // Cria um NavController falso para evitar erro no preview
+        SobreScreen(rememberNavController())
     }
 }
