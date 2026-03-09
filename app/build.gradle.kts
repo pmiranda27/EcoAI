@@ -56,9 +56,12 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //navigation
+    // navigation
     implementation(libs.androidx.navigation.compose)
 
     // Mais ícones
     implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
 }

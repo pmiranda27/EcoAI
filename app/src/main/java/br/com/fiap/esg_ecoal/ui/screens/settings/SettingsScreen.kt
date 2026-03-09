@@ -39,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +53,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -59,20 +61,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
+import br.com.fiap.esg_ecoal.factory.SettingsViewModelFactory
 import br.com.fiap.esg_ecoal.navigation.ScreenRoute
+import br.com.fiap.esg_ecoal.repository.SettingsRepository
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
+import dataStore
 
 
 @Composable
 fun SettingsScreen(navController: NavHostController) {
-    var temaEscuro by remember {
-        mutableStateOf(false)
+    val context = LocalContext.current
+
+    val settingsRepository = remember {
+        SettingsRepository(context.dataStore)
     }
+    val viewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(settingsRepository)
+    )
+    val theme by viewModel.theme.collectAsState()
 
     var mostrarDialogDeslogar by remember {
         mutableStateOf(false)
@@ -146,8 +158,9 @@ fun SettingsScreen(navController: NavHostController) {
                                 icone = Icons.Default.Lightbulb,
                                 texto = "Tema",
                                 rota = "",
+                                temaEscuro = theme,
                                 navController = navController,
-                                changeTheme = {})
+                                changeTheme = { viewModel.changeTheme(!theme) })
                             Spacer(modifier = Modifier.height(8.dp))
                             SettingsOptionItemWithTrailing(
                                 icone = Icons.Default.Language, "Idioma",
@@ -405,7 +418,11 @@ fun SettingsOptionItemWithTrailing(
             .clip(RoundedCornerShape(10.dp))
             .clickable(
                 onClick = {
-                    navController.navigate(rota)
+                    if(changeTheme != null){
+                        changeTheme?.invoke()
+                    }else if(rota.isNotEmpty()){
+                        navController.navigate(rota)
+                    }
                 }
             )
     ) {

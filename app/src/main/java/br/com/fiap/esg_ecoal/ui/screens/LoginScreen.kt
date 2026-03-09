@@ -17,8 +17,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fiap.esg_ecoal.ui.components.EsgTextField
+import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 
 /**
  * Componente que representa o conteúdo da gaveta (Bottom Sheet) de Login.
@@ -117,7 +119,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
         // Texto clicável "Esqueceu sua senha?"
         Text(
             text = "Esqueceu sua senha?",
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.inversePrimary,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -144,5 +146,13 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             // Texto dentro do botão.
             Text("ENTRAR", fontWeight = FontWeight.Black, color = Color.White)
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewLoginScreen() {
+    ESGEcoalTheme {
+        LoginScreen({}, {})
     }
 }
