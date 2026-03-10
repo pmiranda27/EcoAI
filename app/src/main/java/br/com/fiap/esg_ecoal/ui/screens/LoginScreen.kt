@@ -17,10 +17,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import br.com.fiap.esg_ecoal.ui.components.EsgTextField
-import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 
 /**
  * Componente que representa o conteúdo da gaveta (Bottom Sheet) de Login.
@@ -105,7 +104,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
                 // Lógica de ícone dinâmico
-                val iconColor = if (passwordVisible) MaterialTheme.colorScheme.inversePrimary else Color.Gray.copy(alpha = 0.5f)
+                val iconColor = if (passwordVisible) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
                         painter = painterResource(id = br.com.fiap.esg_ecoal.R.drawable.eye),
@@ -119,8 +118,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
         // Texto clicável "Esqueceu sua senha?"
         Text(
             text = "Esqueceu sua senha?",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.inversePrimary,
+            style = MaterialTheme.typography.labelMedium.copy(fontSize = 14.sp),
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()                  // Ocupa a largura total.
@@ -140,19 +139,11 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
                 .height(56.dp),                  // Altura padrão confortável para o polegar.
             shape = RoundedCornerShape(16.dp),   // Cantos bem arredondados para um visual moderno.
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.inversePrimary // Cor de fundo do botão (Roxo).
+                containerColor = MaterialTheme.colorScheme.primary // Cor de fundo do botão (rosa).
             )
         ) {
             // Texto dentro do botão.
             Text("ENTRAR", fontWeight = FontWeight.Black, color = Color.White)
         }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewLoginScreen() {
-    ESGEcoalTheme {
-        LoginScreen({}, {})
     }
 }
