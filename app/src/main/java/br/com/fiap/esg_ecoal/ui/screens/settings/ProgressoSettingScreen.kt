@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
@@ -84,9 +86,9 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
             .fillMaxSize()
     ) {
         Scaffold(
-            topBar = { AppBarDefaultWithGoBackButton("Progresso", navController) },
+            topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.progresso), navController) },
             bottomBar = {
-                BottomBarRedGradient("Apagar Progresso") {
+                BottomBarRedGradient(stringResource(R.string.apagar_progresso)) {
                     mostrarDialogApagarProgresso = true
                 }
             }
@@ -193,7 +195,7 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                             )
                         ) {
                             Text(
-                                "Sim",
+                                stringResource(R.string.sim),
                                 style = TextStyle(
                                     fontFamily = poppinsFamily,
                                     fontWeight = FontWeight.ExtraBold,
@@ -219,7 +221,7 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                             )
                         ) {
                             Text(
-                                "Não",
+                                stringResource(R.string.nao),
                                 style = TextStyle(
                                     fontFamily = poppinsFamily,
                                     fontWeight = FontWeight.ExtraBold,
@@ -231,14 +233,14 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                     },
                     title = {
                         Text(
-                            "Apagar progresso",
+                            stringResource(R.string.apagar_progresso),
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     },
                     text = {
                         Text(
-                            "Tem certeza que deseja apagar o progresso de ${conceito}?",
+                            stringResource(R.string.certeza_apagar_progresso_conceito, conceito),
                             style = MaterialTheme.typography.displaySmall,
                             color = MaterialTheme.colorScheme.onPrimary
                         )

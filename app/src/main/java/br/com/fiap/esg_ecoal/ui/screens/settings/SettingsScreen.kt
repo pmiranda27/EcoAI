@@ -13,11 +13,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
@@ -47,6 +49,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,7 +88,7 @@ fun SettingsScreen(navController: NavHostController) {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Configurações",
+                        stringResource(R.string.configuracoes),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.primary
@@ -93,7 +96,7 @@ fun SettingsScreen(navController: NavHostController) {
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Voltar", tint = colorScheme.primary)
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.voltar), tint = colorScheme.primary)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
@@ -101,12 +104,14 @@ fun SettingsScreen(navController: NavHostController) {
         },
         bottomBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().clickable { mostrarDialogDeslogar = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { mostrarDialogDeslogar = true },
                 color = Color.White,
                 shadowElevation = 8.dp
             ) {
                 Box(modifier = Modifier.padding(20.dp), contentAlignment = Alignment.Center) {
-                    Text("Sair da Conta", color = colorScheme.error, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.sair_da_conta), color = colorScheme.error, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -130,7 +135,7 @@ fun SettingsScreen(navController: NavHostController) {
                     Box(contentAlignment = Alignment.BottomEnd) {
                         Image(
                             painter = painterResource(R.drawable.no_photo),
-                            contentDescription = "Foto",
+                            contentDescription = stringResource(R.string.foto),
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(CircleShape)
@@ -140,7 +145,9 @@ fun SettingsScreen(navController: NavHostController) {
                         Surface(
                             color = colorScheme.primary,
                             shape = CircleShape,
-                            modifier = Modifier.size(28.dp).border(2.dp, Color.White, CircleShape)
+                            modifier = Modifier
+                                .size(28.dp)
+                                .border(2.dp, Color.White, CircleShape)
                         ) {
                             Icon(Icons.Default.Edit, null, tint = colorScheme.onPrimary, modifier = Modifier.padding(6.dp))
                         }
@@ -158,26 +165,42 @@ fun SettingsScreen(navController: NavHostController) {
                 modifier = Modifier.padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                SettingsCategory("CONTA E PREFERÊNCIAS", colorScheme.primary) {
-                    SettingsOptionItem(Icons.Default.Person, "Dados Pessoais") { }
-                    SettingsOptionItem(Icons.Default.Lightbulb, "Tema do Aplicativo") { }
-                    SettingsOptionItem(Icons.Default.Language, "Idioma") { }
+                SettingsCategory(stringResource(R.string.conta_e_preferencias), colorScheme.primary) {
+                    SettingsOptionItem(Icons.Default.Person,
+                        stringResource(R.string.dados_pessoais)
+                    ) { }
+                    SettingsOptionItem(
+                        Icons.Default.Lightbulb,
+                        stringResource(R.string.tema_do_aplicativo),
+                        if (theme) Icons.Default.DarkMode else Icons.Default.LightMode
+                    ) {
+                        viewModel.changeTheme(!theme)
+                    }
+                    SettingsOptionItem(Icons.Default.Language, stringResource(R.string.idioma)) {
+                        navController.navigate(ScreenRoute.Idiomas.route)
+                    }
                 }
 
-                SettingsCategory("PROGRESSO — ESG", colorScheme.primary) {
-                    SettingsOptionItem(Icons.Default.Eco, "Indicadores Ambientais") {
+                SettingsCategory(stringResource(R.string.progresso_esg), colorScheme.primary) {
+                    SettingsOptionItem(Icons.Default.Eco,
+                        stringResource(R.string.indicadores_ambientais)
+                    ) {
                         navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Environmental"))
                     }
-                    SettingsOptionItem(Icons.Default.Groups, "Indicadores Sociais") {
+                    SettingsOptionItem(Icons.Default.Groups,
+                        stringResource(R.string.indicadores_sociais)
+                    ) {
                         navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Social"))
                     }
-                    SettingsOptionItem(Icons.Default.AccountBalance, "Governança Corporativa") {
+                    SettingsOptionItem(Icons.Default.AccountBalance,
+                        stringResource(R.string.governanca_corporativa)
+                    ) {
                         navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Governance"))
                     }
                 }
 
-                SettingsCategory("SUPORTE", colorScheme.primary) {
-                    SettingsOptionItem(Icons.Default.Info, "Sobre o EcoAI") {
+                SettingsCategory(stringResource(R.string.suporte), colorScheme.primary) {
+                    SettingsOptionItem(Icons.Default.Info, stringResource(R.string.sobre_ecoai)) {
                         navController.navigate(ScreenRoute.Sobre.route)
                     }
                 }
@@ -189,16 +212,16 @@ fun SettingsScreen(navController: NavHostController) {
     if (mostrarDialogDeslogar) {
         AlertDialog(
             onDismissRequest = { mostrarDialogDeslogar = false },
-            title = { Text("Desconectar", color = colorScheme.primary) },
-            text = { Text("Tem certeza que deseja sair da sua conta?") },
+            title = { Text(stringResource(R.string.desconectar), color = colorScheme.primary) },
+            text = { Text(stringResource(R.string.certeza_sair_conta)) },
             confirmButton = {
                 TextButton(onClick = { /* Logout */ }) {
-                    Text("Sim, sair", color = colorScheme.error, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.sim_sair), color = colorScheme.error, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { mostrarDialogDeslogar = false }) {
-                    Text("Cancelar", color = colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.cancelar), color = colorScheme.onSurfaceVariant)
                 }
             },
             containerColor = Color.White,
@@ -233,6 +256,7 @@ fun SettingsCategory(titulo: String, primaryColor: Color, conteudo: @Composable 
 fun SettingsOptionItem(
     icone: ImageVector,
     texto: String,
+    iconeTrailing: ImageVector = Icons.Default.ChevronRight,
     onClick: () -> Unit
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
@@ -255,7 +279,7 @@ fun SettingsOptionItem(
             Spacer(modifier = Modifier.width(16.dp))
             Text(texto, fontSize = 15.sp, fontWeight = FontWeight.Medium, color = Color(0xFF2D2D2D))
         }
-        Icon(Icons.Default.ChevronRight, null, tint = primaryColor.copy(alpha = 0.3f), modifier = Modifier.size(20.dp))
+        Icon(iconeTrailing, null, tint = primaryColor.copy(alpha = 0.3f), modifier = Modifier.size(20.dp))
     }
 }
 

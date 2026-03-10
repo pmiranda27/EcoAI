@@ -19,9 +19,21 @@ class SettingsViewModel(
         false
     )
 
+    val language: StateFlow<String> = settingsRepository.linguagemFlow.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        "pt"
+    )
+
     fun changeTheme(darkTheme: Boolean) {
         viewModelScope.launch {
             settingsRepository.setTheme(darkTheme)
+        }
+    }
+
+    fun changeLanguage(language: String){
+        viewModelScope.launch {
+            settingsRepository.setLanguage(language)
         }
     }
 }

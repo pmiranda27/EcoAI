@@ -19,16 +19,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
+import br.com.fiap.esg_ecoal.factory.SettingsViewModelFactory
+import br.com.fiap.esg_ecoal.repository.SettingsRepository
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
+import dataStore
 
 /**
  * Data class para estruturar as opções de idioma (ID, Nome e Recurso da Imagem/Bandeira)
@@ -38,20 +44,29 @@ data class LanguageModel(val id: String, val name: String, val flagRes: Int)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IdiomaScreen(navController: NavHostController) {
+    val context = LocalContext.current
+
+    val settingsRepository = remember {
+        SettingsRepository(context.dataStore)
+    }
+    val viewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(settingsRepository)
+    )
+
     // Estado que armazena qual idioma está selecionado (começa com "pt" - Português)
-    var selectedId by remember { mutableStateOf("pt") }
+    val selectedId = viewModel.language.collectAsState()
 
     // Lista estática com os idiomas disponíveis no app, referenciando os drawables das bandeiras
     val idiomas = listOf(
-        LanguageModel("pt", "Português", R.drawable.brasil_flag),
-        LanguageModel("en", "Inglês", R.drawable.eua_flag),
-        LanguageModel("es", "Espanhol", R.drawable.espanha_flag),
-        LanguageModel("fr", "Francês", R.drawable.franca_flag)
+        LanguageModel("pt", stringResource(R.string.portugues_brasileiro), R.drawable.brasil_flag),
+        LanguageModel("en", stringResource(R.string.ingles), R.drawable.eua_flag),
+        LanguageModel("es", stringResource(R.string.espanhol), R.drawable.espanha_flag),
+        LanguageModel("fr", stringResource(R.string.frances), R.drawable.franca_flag)
     )
 
     // Estrutura principal da tela com barra superior e fundo branco
     Scaffold(
-        topBar = { AppBarDefaultWithGoBackButton("Idioma", navController) }, // Componente personalizado de AppBar
+        topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.idioma), navController) }, // Componente personalizado de AppBar
         containerColor = Color.White // Define a cor de fundo da tela inteira
     ) { paddingValues -> // Recebe os espaçamentos automáticos da Scaffold
         Column(
@@ -83,14 +98,14 @@ fun IdiomaScreen(navController: NavHostController) {
 
             // --- TEXTOS DE APOIO ---
             Text(
-                text = "Escolha seu idioma",
+                text = stringResource(R.string.escolha_seu_idioma),
                 fontSize = 22.sp, // Tamanho da fonte do título
                 fontWeight = FontWeight.Bold, // Fonte em negrito
                 color = Color(0xFF1A1A1A) // Cor de texto quase preta
             )
             Spacer(modifier = Modifier.height(8.dp)) // Espaço entre título e subtítulo
             Text(
-                text = "Selecione o idioma de sua preferência",
+                text = stringResource(R.string.selecione_preferencia_idioma),
                 fontSize = 15.sp, // Tamanho da fonte do subtítulo
                 color = Color.Gray // Cor cinza para dar menos destaque
             )
@@ -106,8 +121,11 @@ fun IdiomaScreen(navController: NavHostController) {
                 items(idiomas) { idioma ->
                     IdiomaCard(
                         idioma = idioma,
-                        isSelected = selectedId == idioma.id, // Verifica se este idioma é o selecionado
-                        onSelect = { selectedId = idioma.id } // Atualiza o estado ao clicar
+                        isSelected = selectedId.value == idioma.id, // Verifica se este idioma é o selecionado
+                        onSelect = {
+                            viewModel.changeLanguage(idioma.id)
+                            println("TENTANDO MUDAR PARA " + idioma.id)
+                        } // Atualiza o estado ao clicar
                     )
                 }
             }
@@ -127,7 +145,7 @@ fun IdiomaScreen(navController: NavHostController) {
                     containerColor = MaterialTheme.colorScheme.primary
                 )
             ) {
-                val textoBotao = when(selectedId) {
+                val textoBotao = when(selectedId.value) {
                     "en" -> "Continue in English"
                     "es" -> "Continuar en Español"
                     "fr" -> "Continuer en Français"

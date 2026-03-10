@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EcoAi</string>
+    <string name="deslogar">Cerrar sesión</string>
+    <string name="preferencias">Preferencias</string>
+    <string name="idioma">Idioma</string>
+    <string name="portugues_brasileiro">Portugués brasileño</string>
+    <string name="ingles">Inglés</string>
+    <string name="espanhol">Español</string>
+    <string name="frances">Francés</string>
+    <string name="escolha_seu_idioma">Elige tu idioma</string>
+    <string name="selecione_preferencia_idioma">Selecciona el idioma de tu preferencia</string>
+    <string name="configuracoes">Configuración</string>
+    <string name="voltar">Volver</string>
+    <string name="sair_da_conta">Salir de la cuenta</string>
+    <string name="foto">Foto</string>
+    <string name="conta_e_preferencias">CUENTA Y PREFERENCIAS</string>
+    <string name="dados_pessoais">Datos personales</string>
+    <string name="tema_do_aplicativo">Tema de la aplicación</string>
+    <string name="indicadores_ambientais">Indicadores ambientales</string>
+    <string name="indicadores_sociais">Indicadores sociales</string>
+    <string name="governanca_corporativa">Gobernanza corporativa</string>
+    <string name="sobre_ecoai">Acerca de EcoAI</string>
+    <string name="desconectar">Desconectar</string>
+    <string name="certeza_sair_conta">¿Estás seguro de que deseas salir de tu cuenta?</string>
+    <string name="sim_sair">Sí, salir</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="nosso_objetivo">Nuestro objetivo</string>
+    <string name="objetivo_ecoai_texto">EcoAi es una plataforma corporativa desarrollada en FIAP para ayudar a las empresas en la gestión de prácticas ESG. Centralizamos indicadores, metas y métricas de sostenibilidad con gamificación para involucrar a los colaboradores.</string>
+    <string name="contexto_desenvolvimento">Contexto de desarrollo</string>
+    <string name="contexto_desenvolvimento_texto">Proyecto académico enfocado en la aplicación práctica de tecnología y diseño, simulando escenarios reales del mercado corporativo y abordando la transparencia en la gestión sostenible.</string>
+    <string name="criadores_do_projeto">Creadores del proyecto</string>
+    <string name="estudante_de_ads">Estudiante de Análisis y Desarrollo de Sistemas</string>
+    <string name="progresso_esg">PROGRESO — ESG</string>
+    <string name="suporte">SOPORTE</string>
+    <string name="progresso">Progreso</string>
+    <string name="apagar_progresso">Eliminar progreso</string>
+    <string name="nao">No</string>
+    <string name="sim">Sí</string>
+    <string name="certeza_apagar_progresso_conceito">¿Estás seguro de que deseas eliminar el progreso de %1$s?</string>
+</resources>

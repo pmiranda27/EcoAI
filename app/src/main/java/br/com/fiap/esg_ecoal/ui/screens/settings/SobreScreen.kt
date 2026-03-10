@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 
 // Permite carregar imagens da pasta drawable
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 // Configurações de texto
 import androidx.compose.ui.text.font.FontWeight
@@ -77,7 +78,7 @@ fun SobreScreen(navController: NavHostController) {
 
     // Estrutura base da tela com AppBar no topo
     Scaffold(
-        topBar = { AppBarDefaultWithGoBackButton("Sobre o EcoAl", navController) },
+        topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.sobre_ecoai), navController) },
         containerColor = Color.White
     ) { paddingValues ->
 
@@ -123,10 +124,10 @@ fun SobreScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(32.dp))
 
             // Seção que explica o objetivo do aplicativo
-            SectionLayout(visible = visible, delay = 200, title = "Nosso Objetivo") {
+            SectionLayout(visible = visible, delay = 200, title = stringResource(R.string.nosso_objetivo)) {
 
                 Text(
-                    text = "O EcoAl é uma plataforma corporativa desenvolvida na FIAP para auxiliar empresas na gestão de práticas ESG. Centralizamos indicadores, metas e métricas de sustentabilidade com gamificação para engajar colaboradores.",
+                    text = stringResource(R.string.objetivo_ecoai_texto),
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     color = Color(0xFF444444),
@@ -137,10 +138,10 @@ fun SobreScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             // Seção explicando o contexto acadêmico do projeto
-            SectionLayout(visible = visible, delay = 400, title = "Contexto de Desenvolvimento") {
+            SectionLayout(visible = visible, delay = 400, title = stringResource(R.string.contexto_desenvolvimento)) {
 
                 Text(
-                    text = "Projeto acadêmico focado na aplicação prática de tecnologia e design, simulando cenários reais do mercado corporativo e abordando a transparência na gestão sustentável.",
+                    text = stringResource(R.string.contexto_desenvolvimento_texto),
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     color = Color(0xFF444444),
@@ -152,7 +153,7 @@ fun SobreScreen(navController: NavHostController) {
 
             // Título da seção de criadores do projeto
             Text(
-                text = "Criadores do Projeto",
+                text = stringResource(R.string.criadores_do_projeto),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start),
@@ -164,7 +165,7 @@ fun SobreScreen(navController: NavHostController) {
             // Cards com os integrantes do projeto
             CriadorCard(
                 nome = "Beatriz Camargo",
-                cargo = "Estudante de ADS",
+                cargo = stringResource(R.string.estudante_de_ads),
                 github = "https://github.com/lotouux",
                 linkedin = "https://www.linkedin.com/in/beatriz-camargo-serafini/",
                 photo = R.drawable.bea
@@ -172,7 +173,7 @@ fun SobreScreen(navController: NavHostController) {
 
             CriadorCard(
                 nome = "Leonardo Martin",
-                cargo = "Estudante de ADS",
+                cargo = stringResource(R.string.estudante_de_ads),
                 github = "https://github.com/ruivoomt",
                 linkedin = "https://www.linkedin.com/in/leonardo-martin-moncao/",
                 photo = R.drawable.leo
@@ -180,7 +181,7 @@ fun SobreScreen(navController: NavHostController) {
 
             CriadorCard(
                 nome = "Sandra Mendes",
-                cargo = "Estudante de ADS",
+                cargo = stringResource(R.string.estudante_de_ads),
                 github = "https://github.com/saanmendes",
                 linkedin = "https://www.linkedin.com/in/sandra-mendes-55a5012b2/",
                 photo = R.drawable.andy
@@ -188,7 +189,7 @@ fun SobreScreen(navController: NavHostController) {
 
             CriadorCard(
                 nome = "Lucas Silveira",
-                cargo = "Estudante de ADS",
+                cargo = stringResource(R.string.estudante_de_ads),
                 github = "https://github.com/lucas-silveira",
                 linkedin = "https://www.linkedin.com/in/lucas-silveira/",
                 photo = R.drawable.lucas
@@ -196,7 +197,7 @@ fun SobreScreen(navController: NavHostController) {
 
             CriadorCard(
                 nome = "Pedro Miranda",
-                cargo = "Estudante de ADS",
+                cargo = stringResource(R.string.estudante_de_ads),
                 github = "https://github.com/pmiranda27",
                 linkedin = "https://www.linkedin.com/in/pedro-miranda-dev27/",
                 photo = R.drawable.miranda
