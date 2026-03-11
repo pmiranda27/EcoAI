@@ -17,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 
 // OptIn necessário pois as APIs de TopAppBar do Material 3 ainda são consideradas experimentais
@@ -44,7 +46,8 @@ fun AppBarDefaultWithGoBackButton(title: String = "", navController: NavHostCont
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold, // Peso médio para passar seriedade
                     fontSize = 20.sp // Tamanho equilibrado para não dominar a tela
-                )
+                ),
+                color = MaterialTheme.colorScheme.onBackground
             )
         },
         // Definição do ícone à esquerda (Navegação)
@@ -55,8 +58,8 @@ fun AppBarDefaultWithGoBackButton(title: String = "", navController: NavHostCont
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew, // Ícone estilo iOS (mais fino e moderno)
-                    contentDescription = "Voltar",
-                    modifier = Modifier.size(20.dp) // Tamanho reduzido para um aspecto mais elegante
+                    contentDescription = stringResource(R.string.voltar),
+                    modifier = Modifier.size(24.dp) // Tamanho reduzido para um aspecto mais elegante
                 )
             }
         },
