@@ -16,14 +16,14 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun EsgPill(label: String) {
     Surface(
-        color = Color.White.copy(alpha = 0.3f),
+        color = MaterialTheme.colorScheme.background.copy(alpha = 0.3f),
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f))
     ) {
         Text(
             text = label.uppercase(),
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.labelSmall.copy(
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = 1.sp

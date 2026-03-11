@@ -1,7 +1,9 @@
 package br.com.fiap.esg_ecoal.ui.screens.settings
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -59,13 +61,13 @@ import br.com.fiap.esg_ecoal.navigation.ScreenRoute
 import br.com.fiap.esg_ecoal.repository.SettingsRepository
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
+import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
 import dataStore
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavHostController) {
-    var mostrarDialogDeslogar by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val settingsRepository = remember {
@@ -79,8 +81,14 @@ fun SettingsScreen(navController: NavHostController) {
     // Pegando as cores direto do seu MaterialTheme (Rosa)
     val colorScheme = MaterialTheme.colorScheme
 
+    val imagemUsuario by remember {
+        mutableStateOf(null)
+    }
+
+    var mostrarDialogDeslogar by remember { mutableStateOf(false) }
+
     Scaffold(
-        containerColor = colorScheme.surfaceVariant.copy(alpha = 0.3f), // Fundo suave baseado no tema
+        containerColor = colorScheme.background.copy(alpha = 1f), // Fundo suave baseado no tema
         topBar = {
             AppBarDefaultWithGoBackButton(stringResource(R.string.configuracoes), navController)
         },
@@ -89,11 +97,15 @@ fun SettingsScreen(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { mostrarDialogDeslogar = true },
-                color = Color.White,
+                color = MaterialTheme.colorScheme.background,
                 shadowElevation = 8.dp
             ) {
                 Box(modifier = Modifier.padding(20.dp), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.sair_da_conta), color = colorScheme.error, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.sair_da_conta),
+                        color = colorScheme.error,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -107,23 +119,43 @@ fun SettingsScreen(navController: NavHostController) {
             // --- HEADER DE PERFIL ---
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.background,
                 shadowElevation = 1.dp
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(vertical = 32.dp)
                 ) {
-                    Box(contentAlignment = Alignment.BottomEnd) {
-                        Image(
-                            painter = painterResource(R.drawable.no_photo),
-                            contentDescription = stringResource(R.string.foto),
+                    Box(
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
+                        Box(
                             modifier = Modifier
                                 .size(100.dp)
+                                .background(MaterialTheme.colorScheme.background, CircleShape)
                                 .clip(CircleShape)
-                                .border(2.dp, colorScheme.primary, CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
+                                .border(2.dp, colorScheme.primary, CircleShape)
+                        ) {
+
+                            if (imagemUsuario == null) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = stringResource(R.string.foto),
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier
+                                        .size(90.dp)
+                                        .align(Alignment.Center)
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(R.drawable.no_photo),
+                                    contentDescription = stringResource(R.string.foto),
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
+
                         Surface(
                             color = colorScheme.primary,
                             shape = CircleShape,
@@ -131,12 +163,26 @@ fun SettingsScreen(navController: NavHostController) {
                                 .size(28.dp)
                                 .border(2.dp, Color.White, CircleShape)
                         ) {
-                            Icon(Icons.Default.Edit, null, tint = colorScheme.onPrimary, modifier = Modifier.padding(6.dp))
+                            Icon(
+                                Icons.Default.Edit,
+                                null,
+                                tint = colorScheme.onPrimary,
+                                modifier = Modifier.padding(6.dp)
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("User", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = colorScheme.primary)
-                    Text("User@empresa.com.br", fontSize = 14.sp, color = colorScheme.onSurfaceVariant)
+                    Text(
+                        "User",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorScheme.primary
+                    )
+                    Text(
+                        "User@empresa.com.br",
+                        fontSize = 14.sp,
+                        color = colorScheme.onSurfaceVariant
+                    )
                 }
             }
 
@@ -147,8 +193,12 @@ fun SettingsScreen(navController: NavHostController) {
                 modifier = Modifier.padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                SettingsCategory(stringResource(R.string.conta_e_preferencias), colorScheme.primary) {
-                    SettingsOptionItem(Icons.Default.Person,
+                SettingsCategory(
+                    stringResource(R.string.conta_e_preferencias),
+                    colorScheme.primary
+                ) {
+                    SettingsOptionItem(
+                        Icons.Default.Person,
                         stringResource(R.string.dados_pessoais)
                     ) { }
                     SettingsOptionItem(
@@ -164,17 +214,20 @@ fun SettingsScreen(navController: NavHostController) {
                 }
 
                 SettingsCategory(stringResource(R.string.progresso_esg), colorScheme.primary) {
-                    SettingsOptionItem(Icons.Default.Eco,
+                    SettingsOptionItem(
+                        Icons.Default.Eco,
                         stringResource(R.string.indicadores_ambientais)
                     ) {
                         navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Environmental"))
                     }
-                    SettingsOptionItem(Icons.Default.Groups,
+                    SettingsOptionItem(
+                        Icons.Default.Groups,
                         stringResource(R.string.indicadores_sociais)
                     ) {
                         navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Social"))
                     }
-                    SettingsOptionItem(Icons.Default.AccountBalance,
+                    SettingsOptionItem(
+                        Icons.Default.AccountBalance,
                         stringResource(R.string.governanca_corporativa)
                     ) {
                         navController.navigate(ScreenRoute.ProgressoSetting.createRoute("Governance"))
@@ -192,38 +245,75 @@ fun SettingsScreen(navController: NavHostController) {
     }
 
     if (mostrarDialogDeslogar) {
-        AlertDialog(
-            onDismissRequest = { mostrarDialogDeslogar = false },
-            title = { Text(stringResource(R.string.desconectar), color = colorScheme.primary) },
-            text = { Text(stringResource(R.string.certeza_sair_conta)) },
-            confirmButton = {
-                TextButton(onClick = { /* Logout */ }) {
-                    Text(stringResource(R.string.sim_sair), color = colorScheme.error, fontWeight = FontWeight.Bold)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { mostrarDialogDeslogar = false }) {
-                    Text(stringResource(R.string.cancelar), color = colorScheme.onSurfaceVariant)
-                }
-            },
-            containerColor = Color.White,
-            shape = RoundedCornerShape(24.dp)
-        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.85f))
+        ) {
+            AlertDialog(
+                onDismissRequest = { mostrarDialogDeslogar = false },
+                title = {
+                    Text(
+                        stringResource(R.string.desconectar),
+                        color = colorScheme.primary,
+                        fontSize = 24.sp,
+                        fontFamily = poppinsFamily
+                    )
+                },
+                text = {
+                    Text(
+                        stringResource(R.string.certeza_sair_conta),
+                        fontFamily = poppinsFamily,
+                        fontSize = 16.sp,
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = { /* Logout */ }) {
+                        Text(
+                            stringResource(R.string.sim_sair),
+                            color = colorScheme.error,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppinsFamily,
+                            fontSize = 16.sp
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { mostrarDialogDeslogar = false }) {
+                        Text(
+                            stringResource(R.string.cancelar),
+                            color = colorScheme.onSurfaceVariant,
+                            fontFamily = poppinsFamily,
+                            fontSize = 14.sp
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .border(1.dp, Color.White, RoundedCornerShape(24.dp)),
+                containerColor = Color.Transparent,
+                shape = RoundedCornerShape(24.dp)
+            )
+        }
     }
 }
 
 @Composable
-fun SettingsCategory(titulo: String, primaryColor: Color, conteudo: @Composable ColumnScope.() -> Unit) {
+fun SettingsCategory(
+    titulo: String,
+    primaryColor: Color,
+    conteudo: @Composable ColumnScope.() -> Unit
+) {
     Column {
         Text(
             text = titulo,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = primaryColor.copy(alpha = 0.7f),
             modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
         )
         Card(
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(1.dp, Color(0xFFEEEEEE))
         ) {
@@ -259,13 +349,23 @@ fun SettingsOptionItem(
                 Icon(icone, null, tint = primaryColor, modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Text(texto, fontSize = 15.sp, fontWeight = FontWeight.Medium, color = Color(0xFF2D2D2D))
+            Text(
+                texto,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
-        Icon(iconeTrailing, null, tint = primaryColor.copy(alpha = 0.3f), modifier = Modifier.size(20.dp))
+        Icon(
+            iconeTrailing,
+            null,
+            tint = primaryColor.copy(alpha = 0.3f),
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewSettingsScreen() {
     ESGEcoalTheme {

@@ -1,5 +1,6 @@
 package br.com.fiap.esg_ecoal.ui.screens.settings
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,7 +68,7 @@ fun IdiomaScreen(navController: NavHostController) {
     // Estrutura principal da tela com barra superior e fundo branco
     Scaffold(
         topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.idioma), navController) }, // Componente personalizado de AppBar
-        containerColor = Color.White // Define a cor de fundo da tela inteira
+        containerColor = MaterialTheme.colorScheme.background // Define a cor de fundo da tela inteira
     ) { paddingValues -> // Recebe os espaçamentos automáticos da Scaffold
         Column(
             modifier = Modifier
@@ -83,7 +84,7 @@ fun IdiomaScreen(navController: NavHostController) {
                 modifier = Modifier
                     .size(100.dp) // Define o tamanho do círculo
                     .clip(CircleShape) // Corta o fundo em formato circular
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)), // Fundo leve com a cor primária
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.20f)), // Fundo leve com a cor primária
                 contentAlignment = Alignment.Center // Centraliza o ícone dentro do círculo
             ) {
                 Icon(
@@ -101,7 +102,7 @@ fun IdiomaScreen(navController: NavHostController) {
                 text = stringResource(R.string.escolha_seu_idioma),
                 fontSize = 22.sp, // Tamanho da fonte do título
                 fontWeight = FontWeight.Bold, // Fonte em negrito
-                color = Color(0xFF1A1A1A) // Cor de texto quase preta
+                color = MaterialTheme.colorScheme.onBackground // Cor de texto quase preta
             )
             Spacer(modifier = Modifier.height(8.dp)) // Espaço entre título e subtítulo
             Text(
@@ -175,9 +176,9 @@ fun IdiomaCard(
     onSelect: () -> Unit
 ) {
     // Variáveis de estilo que mudam se o item estiver selecionado ou não
-    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else Color.White
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else MaterialTheme.colorScheme.background
     val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color(0xFFEEEEEE)
-    val textColor = if (isSelected) MaterialTheme.colorScheme.primary else Color(0xFF444444)
+    val textColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
 
     Row(
         modifier = Modifier
@@ -247,7 +248,7 @@ fun IdiomaCard(
 /**
  * Função de visualização
  */
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewIdiomaScreen() {
     ESGEcoalTheme {

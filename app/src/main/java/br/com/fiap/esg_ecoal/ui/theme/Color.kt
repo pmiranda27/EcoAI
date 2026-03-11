@@ -11,6 +11,10 @@ val LightOnPrimary = Color(0xFFFFFFFF)
 val LightOnBackground = Color(0xFF000000)
 
 // Paleta Dark Mode
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val DarkPrimary = Color(0xFFa02c3d)
+val DarkSecondary = Color(0xFFa573a5)
+val DarkInversePrimary = Color(0xFF5F5785)
+val DarkTertiary = Color(0xFFbda8aa)
+val DarkOnPrimary = Color(0xFFFFFFFF)
+val DarkBackground = Color(0xFF000000)
+val DarkOnBackground = Color(0xFFFFFFFF)

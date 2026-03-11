@@ -54,7 +54,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.bem_vinde_de_volta),
             style = MaterialTheme.typography.headlineSmall, // Estilo de fonte definido no tema.
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
@@ -74,7 +74,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.email_corporativo),
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth() // Garante que o texto ocupe a largura para o TextAlign funcionar.
         )
@@ -92,7 +92,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.senha),
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth()
         )

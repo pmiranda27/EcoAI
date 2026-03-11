@@ -1,5 +1,6 @@
 package br.com.fiap.esg_ecoal.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
@@ -292,7 +293,7 @@ fun NewsCard(source: String, title: String, onClick: () -> Unit) {
 }
 
 // Preview para visualizar a tela no Android Studio
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun HomeScreenPreview() {
     ESGEcoalTheme { HomeScreen() } // Exibe a HomeScreen no preview

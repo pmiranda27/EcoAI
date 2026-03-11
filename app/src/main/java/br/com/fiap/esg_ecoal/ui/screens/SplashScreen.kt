@@ -153,7 +153,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
             ModalBottomSheet(
                 onDismissRequest = { currentSheet = SheetType.NONE }, // Fecha ao clicar fora ou deslizar para baixo
                 sheetState = sheetState,
-                containerColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
             ) {
                 // Alterna o conteúdo da gaveta baseado no estado atual

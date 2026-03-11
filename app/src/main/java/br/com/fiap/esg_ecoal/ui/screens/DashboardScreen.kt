@@ -1,5 +1,6 @@
 package br.com.fiap.esg_ecoal.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -124,7 +125,7 @@ fun ChartCard(title: String, content: @Composable () -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun DashboardScreenPreview() {
     ESGEcoalTheme {

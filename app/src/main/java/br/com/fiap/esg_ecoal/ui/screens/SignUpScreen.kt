@@ -55,7 +55,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.criar_conta),
             style = MaterialTheme.typography.headlineSmall, // Fonte de destaque (título)
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
@@ -75,7 +75,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.nome_completo),
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth() // Texto ocupa a largura para alinhar à esquerda corretamente
         )
@@ -91,7 +91,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.empresa),
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth()
         )
@@ -107,7 +107,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.email_corporativo),
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth()
         )
@@ -124,7 +124,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         Text(
             text = stringResource(R.string.crie_uma_senha),
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth()
         )

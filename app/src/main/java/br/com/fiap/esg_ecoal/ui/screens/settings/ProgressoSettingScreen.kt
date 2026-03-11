@@ -1,5 +1,6 @@
 package br.com.fiap.esg_ecoal.ui.screens.settings
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -12,7 +13,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,8 +32,6 @@ import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,6 +41,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -170,7 +169,7 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                     modifier = Modifier
                         .size(100.dp) // Define o tamanho do círculo
                         .clip(CircleShape) // Corta o fundo em formato circular
-                        .background(corConceito.copy(alpha = 0.1f)), // Fundo leve com a cor primária
+                        .background(corConceito.copy(alpha = 0.20f)), // Fundo leve com a cor primária
                     contentAlignment = Alignment.Center // Centraliza o ícone dentro do círculo
                 ) {
                     Icon(
@@ -188,7 +187,7 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                     text = tituloPagina,
                     fontSize = 22.sp, // Tamanho da fonte do título
                     fontWeight = FontWeight.Bold, // Fonte em negrito
-                    color = Color(0xFF1A1A1A) // Cor de texto quase preta
+                    color = colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.height(8.dp)) // Espaço entre título e subtítulo
 
@@ -244,73 +243,36 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.80f))
+                    .background(Color.Black.copy(alpha = 0.85f))
             ) {
                 AlertDialog(
                     onDismissRequest = { mostrarDialogApagarProgresso = false },
                     containerColor = Color.Transparent,
                     modifier = Modifier
                         .fillMaxWidth(fraction = 1f)
-                        .clip(shape = RoundedCornerShape(12.dp))
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    colorScheme.primary,
-                                    colorScheme.secondary
-                                )
-                            )
-                        ),
+                        .border(1.dp, Color.White, RoundedCornerShape(24.dp)),
                     confirmButton = {
-                        Button(
-                            onClick = {
-
-                            },
-                            contentPadding = PaddingValues(
-                                horizontal = 40.dp,
-                                vertical = 8.dp
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF53A73D).copy(1f), // verde
-                                contentColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            elevation = ButtonDefaults.buttonElevation(
-                                defaultElevation = 6.dp
-                            )
-                        ) {
+                        TextButton(onClick = {}) {
                             Text(
                                 stringResource(R.string.sim),
                                 style = TextStyle(
+                                    color = colorScheme.primary,
+                                    fontWeight = FontWeight.Bold,
                                     fontFamily = poppinsFamily,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = Color.White,
-                                    fontSize = 22.sp
+                                    fontSize = 18.sp
                                 )
                             )
                         }
                     },
                     dismissButton = {
-                        Button(
-                            onClick = {
-                                mostrarDialogApagarProgresso = false
-                            },
-                            contentPadding = PaddingValues(horizontal = 40.dp, vertical = 8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFA62B3D).copy(1f), // verde
-                                contentColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            elevation = ButtonDefaults.buttonElevation(
-                                defaultElevation = 6.dp
-                            )
-                        ) {
+                        TextButton(onClick = { mostrarDialogApagarProgresso = false }) {
                             Text(
-                                stringResource(R.string.nao),
+                                stringResource(R.string.cancelar),
                                 style = TextStyle(
-                                    fontFamily = poppinsFamily,
                                     fontWeight = FontWeight.ExtraBold,
-                                    color = Color.White,
-                                    fontSize = 22.sp
+                                    color = colorScheme.onSurfaceVariant,
+                                    fontFamily = poppinsFamily,
+                                    fontSize = 16.sp
                                 )
                             )
                         }
@@ -318,15 +280,17 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                     title = {
                         Text(
                             stringResource(R.string.apagar_progresso),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = colorScheme.onPrimary
+                            fontSize = 24.sp,
+                            fontFamily = poppinsFamily,
+                            color = colorScheme.primary
                         )
                     },
                     text = {
                         Text(
                             stringResource(R.string.certeza_apagar_progresso_conceito, conceito),
-                            style = MaterialTheme.typography.displaySmall,
-                            color = colorScheme.onPrimary
+                            fontFamily = poppinsFamily,
+                            fontSize = 16.sp,
+                            color = colorScheme.onPrimary.copy(.65f)
                         )
                     }
                 )
@@ -365,7 +329,7 @@ fun BarraProgresso(isPrincipal: Boolean, cor: Color, progresso: Float) {
             .border(
                 BorderStroke(
                     2.dp,
-                    colorScheme.onPrimary
+                    colorScheme.onBackground
                 ),
                 shape = RoundedCornerShape(16.dp)
             )
@@ -402,7 +366,7 @@ fun BarraProgresso(isPrincipal: Boolean, cor: Color, progresso: Float) {
     }
 }
 
-@Preview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewProgressoSettingScreen() {
     ESGEcoalTheme {

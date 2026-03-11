@@ -35,7 +35,7 @@ fun AppBarDefaultWithGoBackButton(title: String = "", navController: NavHostCont
     CenterAlignedTopAppBar(
         // Configuração de cores da AppBar para um visual "Clean"
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.White, // Fundo branco para se fundir com o fundo da tela
+            containerColor = MaterialTheme.colorScheme.background, // Fundo branco para se fundir com o fundo da tela
             titleContentColor = Color(0xFF1A1A1A), // Cor do título (quase preto para melhor leitura)
             navigationIconContentColor = Color(0xFF1A1A1A) // Cor do ícone de navegação
         ),
@@ -59,6 +59,7 @@ fun AppBarDefaultWithGoBackButton(title: String = "", navController: NavHostCont
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew, // Ícone estilo iOS (mais fino e moderno)
                     contentDescription = stringResource(R.string.voltar),
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(24.dp) // Tamanho reduzido para um aspecto mais elegante
                 )
             }

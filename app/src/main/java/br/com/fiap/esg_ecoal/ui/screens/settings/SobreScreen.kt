@@ -1,6 +1,7 @@
 package br.com.fiap.esg_ecoal.ui.screens.settings
 
 // Imports de animações
+import android.content.res.Configuration
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 
@@ -79,7 +80,7 @@ fun SobreScreen(navController: NavHostController) {
     // Estrutura base da tela com AppBar no topo
     Scaffold(
         topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.sobre_ecoai), navController) },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
         // Coluna principal que organiza todos os elementos verticalmente
@@ -105,7 +106,7 @@ fun SobreScreen(navController: NavHostController) {
                     modifier = Modifier
                         .size(160.dp)
                         .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
                             CircleShape
                         ),
                     contentAlignment = Alignment.Center
@@ -130,7 +131,7 @@ fun SobreScreen(navController: NavHostController) {
                     text = stringResource(R.string.objetivo_ecoai_texto),
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
-                    color = Color(0xFF444444),
+                    color = Color(0xFF555555),
                     textAlign = TextAlign.Justify
                 )
             }
@@ -157,7 +158,7 @@ fun SobreScreen(navController: NavHostController) {
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start),
-                color = Color(0xFF1A1A1A)
+                color = MaterialTheme.colorScheme.primary.copy(.75f)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -263,7 +264,7 @@ fun CriadorCard(
 
         shape = RoundedCornerShape(16.dp),
 
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBFBFB)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onBackground.copy(.1f)),
 
         border = BorderStroke(1.dp, Color(0xFFEEEEEE))
     ) {
@@ -329,7 +330,7 @@ fun CriadorCard(
 
 
 // Preview da tela dentro do Android Studio
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewSobreScreen() {
 
