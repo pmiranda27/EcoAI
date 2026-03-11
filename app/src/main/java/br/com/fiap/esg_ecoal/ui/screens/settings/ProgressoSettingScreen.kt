@@ -9,7 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,16 +19,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Eco
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +65,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
-import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
 
@@ -59,6 +73,7 @@ data class Meta(
     val progresso: Float
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
 
@@ -67,6 +82,20 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
         "social" -> Color(0xFFED4C5C)
         "governance" -> Color(0xFFEB9C6E)
         else -> Color.Gray
+    }
+
+    val iconePagina = when (conceito.lowercase()) {
+        "environmental" -> Icons.Default.Eco
+        "social" -> Icons.Default.Groups
+        "governance" -> Icons.Default.AccountBalance
+        else -> Icons.Default.Error
+    }
+
+    val tituloPagina = when (conceito.lowercase()) {
+        "environmental" -> stringResource(R.string.indicadores_ambientais)
+        "social" -> stringResource(R.string.indicadores_sociais)
+        "governance" -> stringResource(R.string.governanca_corporativa)
+        else -> "Error"
     }
 
     val metasConceito = listOf(
@@ -86,74 +115,129 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
             .fillMaxSize()
     ) {
         Scaffold(
-            topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.progresso), navController) },
-            bottomBar = {
-                BottomBarRedGradient(stringResource(R.string.apagar_progresso)) {
-                    mostrarDialogApagarProgresso = true
-                }
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent // Cor transparente no fundo da barra
+                    ),
+                    title = {
+                        Text(
+                            text = stringResource(R.string.progresso), // Título do app
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold, // Peso médio para passar seriedade
+                                fontSize = 20.sp // Tamanho equilibrado para não dominar a tela
+                            )
+                        )
+                    },
+                    navigationIcon = { // Ícone de configurações no canto esquerdo
+                        IconButton(
+                            onClick = { navController.popBackStack() }, // Ação do clique no ícone de configurações
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBackIosNew, // Ícone estilo iOS (mais fino e moderno)
+                                contentDescription = stringResource(R.string.voltar),
+                                modifier = Modifier.size(24.dp) // Tamanho reduzido para um aspecto mais elegante
+                            )
+                        }
+                    },
+                    actions = { // Ícone de apagar progresso no canto direito
+                        IconButton(
+                            onClick = {
+                                mostrarDialogApagarProgresso = true
+                            }, // Ação do clique no ícone de perfil
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.apagar_progresso),
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                )
             }
         ) { paddingValues ->
-            Box(
-                contentAlignment = Alignment.Center,
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+                    .fillMaxSize() // Ocupa todo o espaço disponível
+                    .padding(paddingValues) // Aplica o padding vindo da Scaffold
+                    .padding(horizontal = 24.dp), // Adiciona margem lateral de 24dp
+                horizontalAlignment = Alignment.CenterHorizontally // Centraliza os itens na horizontal
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Spacer(modifier = Modifier.height(32.dp)) // Espaço entre o topo e o ícone
+
+                // --- ÍCONE CENTRAL COM CÍRCULO SUAVE ---
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth(fraction = 0.85f)
-                        .fillMaxHeight(fraction = 0.95f)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.secondary.copy(0.65f),
-                                    MaterialTheme.colorScheme.primary.copy(0.65f)
-                                )
-                            )
-                        )
-                        .border(
-                            BorderStroke(
-                                3.dp,
-                                Brush.horizontalGradient(
-                                    colors = listOf(
-                                        MaterialTheme.colorScheme.primary,
-                                        MaterialTheme.colorScheme.secondary
-                                    )
-                                )
-                            ),
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 24.dp)
+                        .size(100.dp) // Define o tamanho do círculo
+                        .clip(CircleShape) // Corta o fundo em formato circular
+                        .background(corConceito.copy(alpha = 0.1f)), // Fundo leve com a cor primária
+                    contentAlignment = Alignment.Center // Centraliza o ícone dentro do círculo
                 ) {
-                    Text(
-                        text = conceito,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimary
+                    Icon(
+                        imageVector = iconePagina, // Ícone de globo/idioma
+                        contentDescription = null, // Descrição opcional para acessibilidade
+                        modifier = Modifier.size(48.dp), // Tamanho do ícone
+                        tint = corConceito // Cor do ícone baseada no tema
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    BarraProgresso(true, corConceito, 0.5f)
-                    Spacer(modifier = Modifier.height(28.dp))
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        items(metasConceito) { meta ->
-                            Text(
-                                text = meta.titulo,
-                                style = MaterialTheme.typography.displaySmall,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            BarraProgresso(false, corConceito, meta.progresso)
-                            Spacer(modifier = Modifier.height(24.dp))
+                }
+
+                Spacer(modifier = Modifier.height(24.dp)) // Espaço entre ícone e título
+
+                // --- TEXTOS DE APOIO ---
+                Text(
+                    text = tituloPagina,
+                    fontSize = 22.sp, // Tamanho da fonte do título
+                    fontWeight = FontWeight.Bold, // Fonte em negrito
+                    color = Color(0xFF1A1A1A) // Cor de texto quase preta
+                )
+                Spacer(modifier = Modifier.height(8.dp)) // Espaço entre título e subtítulo
+
+                BarraProgresso(true, corConceito, 0.5f) // Barra de progresso principal
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Box(modifier = Modifier.fillMaxWidth(0.55f).height(1.dp).background(colorScheme.onBackground))
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(metasConceito) { meta ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+//                            shape = RoundedCornerShape(12.dp),
+//                            colors = CardDefaults.cardColors(
+//                                containerColor = colorScheme.primary.copy(
+//                                    alpha = 0.7f
+//                                )
+//                            )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = meta.titulo,
+                                    fontSize = 15.sp,
+                                    textAlign = TextAlign.Center,
+                                    color = colorScheme.onBackground
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                BarraProgresso(false, corConceito, meta.progresso)
+                            }
                         }
                     }
                 }
             }
+
         }
         if (mostrarDialogApagarProgresso) {
             Box(
@@ -171,8 +255,8 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                         .background(
                             Brush.horizontalGradient(
                                 colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
+                                    colorScheme.primary,
+                                    colorScheme.secondary
                                 )
                             )
                         ),
@@ -235,14 +319,14 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                         Text(
                             stringResource(R.string.apagar_progresso),
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = colorScheme.onPrimary
                         )
                     },
                     text = {
                         Text(
                             stringResource(R.string.certeza_apagar_progresso_conceito, conceito),
                             style = MaterialTheme.typography.displaySmall,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = colorScheme.onPrimary
                         )
                     }
                 )
@@ -257,7 +341,7 @@ fun BarraProgresso(isPrincipal: Boolean, cor: Color, progresso: Float) {
         Color(0xFF8DBD80) -> Color(0xFFA5D6A7) // environmental
         Color(0xFFED4C5C) -> Color(0xFFF28B82) // social
         Color(0xFFEB9C6E) -> Color(0xFFF6B48F) // governance
-        else -> MaterialTheme.colorScheme.secondary
+        else -> colorScheme.secondary
     }
 
     val infiniteTransition = rememberInfiniteTransition(label = "progressIdle")
@@ -277,14 +361,15 @@ fun BarraProgresso(isPrincipal: Boolean, cor: Color, progresso: Float) {
         modifier = Modifier
             .fillMaxWidth(if (isPrincipal) 0.95f else 0.80f)
             .height(if (isPrincipal) 45.dp else 30.dp)
+            .clip(RoundedCornerShape(16.dp))
             .border(
                 BorderStroke(
                     2.dp,
-                    MaterialTheme.colorScheme.onPrimary
+                    colorScheme.onPrimary
                 ),
                 shape = RoundedCornerShape(16.dp)
             )
-            .clip(RoundedCornerShape(16.dp))
+            .background(cor.copy(alpha = 0.55f))
     ) {
 
         Box(
@@ -304,44 +389,15 @@ fun BarraProgresso(isPrincipal: Boolean, cor: Color, progresso: Float) {
                     )
                 )
         )
-
         Text(
             text = "${(progresso * 100).toInt()}%",
             style = TextStyle(
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = if (isPrincipal) 28.sp else 20.sp
+                fontSize = if (isPrincipal) 28.sp else 16.sp
             ),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
-    }
-}
-
-@Composable
-fun BottomBarRedGradient(
-    texto: String = "",
-    onClick: () -> Unit = {}
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .background(
-                Brush.horizontalGradient(
-                    listOf(
-                        Color(0xFFED4C5C),
-                        Color(0xFFE30A29)
-                    )
-                )
-            )
-            .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = texto,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = colorScheme.onPrimary
         )
     }
 }
