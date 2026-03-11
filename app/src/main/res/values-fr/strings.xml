@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">EcoAi</string>
+    <string name="app_name">EcoAl</string>
     <string name="deslogar">Se déconnecter</string>
     <string name="preferencias">Préférences</string>
     <string name="idioma">Langue</string>
