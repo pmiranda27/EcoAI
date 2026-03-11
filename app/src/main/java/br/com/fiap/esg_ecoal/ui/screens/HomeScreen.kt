@@ -32,10 +32,15 @@ import androidx.compose.ui.unit.sp
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import kotlin.math.sin
 import br.com.fiap.esg_ecoal.R
-
+import br.com.fiap.esg_ecoal.navigation.ScreenRoute
+import androidx.navigation.NavHostController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onSettingsClick: () -> Unit = {}, onProfileClick: () -> Unit = {}) {
+fun HomeScreen(
+    navController: NavHostController,
+    onSettingsClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {}
+) {
     var selectedTimeframe by remember { mutableStateOf("Mensal") } // Armazena o filtro de tempo selecionado ("Mensal", "Trimestral", "Anual")
     val uriHandler = LocalUriHandler.current // Permite abrir URLs de forma segura
     var visible by remember { mutableStateOf(false) } // Controla a visibilidade da animação
@@ -140,8 +145,14 @@ fun HomeScreen(onSettingsClick: () -> Unit = {}, onProfileClick: () -> Unit = {}
             Text(stringResource(R.string.gestao_operacional), fontWeight = FontWeight.Bold, fontSize = 18.sp) // Título da seção de ações rápidas
             Spacer(modifier = Modifier.height(12.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { // Ações rápidas com ícones
-                QuickActionItem(Modifier.weight(1f),
-                    stringResource(R.string.metas_equipe), Icons.Default.Groups) // Ação "Metas Equipe"
+                QuickActionItem(
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.metas_equipe),
+                    icon = Icons.Default.Groups,
+                    onClick = {
+                        navController.navigate(ScreenRoute.Tasks.createRoute("Environmental"))
+                    }
+                ) // Ação "Metas Equipe"
                 QuickActionItem(Modifier.weight(1f),
                     stringResource(R.string.relatorios), Icons.Default.Description) // Ação "Relatórios"
             }
@@ -254,18 +265,23 @@ fun ScoreCard(current: Int, target: Int, level: String) {
 
 // Componente para exibir um item de ação rápida
 @Composable
-fun QuickActionItem(modifier: Modifier, label: String, icon: ImageVector) {
+fun QuickActionItem(
+    modifier: Modifier,
+    label: String,
+    icon: ImageVector,
+    onClick: () -> Unit = {} // Habilita o clique
+) {
     Card(
         modifier = modifier
             .height(90.dp)
-            .clickable { },
+            .clickable { onClick() }, // Faz o card reagir ao clique
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = colorScheme.primary.copy(alpha = 0.60f)),
         border = BorderStroke(1.dp, colorScheme.primary)
     ) {
         Column(modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
-            Icon(icon, null, tint = colorScheme.onPrimary, modifier = Modifier.size(28.dp)) // Ícone da ação rápida
-            Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = colorScheme.onPrimary, modifier = Modifier.padding(top = 8.dp)) // Texto da ação rápida
+            Icon(icon, null, tint = colorScheme.onPrimary, modifier = Modifier.size(28.dp))
+            Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = colorScheme.onPrimary, modifier = Modifier.padding(top = 8.dp))
         }
     }
 }
@@ -296,5 +312,8 @@ fun NewsCard(source: String, title: String, onClick: () -> Unit) {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun HomeScreenPreview() {
-    ESGEcoalTheme { HomeScreen() } // Exibe a HomeScreen no preview
+    ESGEcoalTheme {
+        val fakeNavController = androidx.navigation.compose.rememberNavController()
+        HomeScreen(navController = fakeNavController)
+    }
 }
