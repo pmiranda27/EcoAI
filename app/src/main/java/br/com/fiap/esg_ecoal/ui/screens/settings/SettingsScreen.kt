@@ -249,7 +249,7 @@ fun SettingsScreen(navController: NavHostController) {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.85f))
+                .background(colorScheme.background.copy(alpha = 0.85f))
         ) {
             AlertDialog(
                 onDismissRequest = { mostrarDialogDeslogar = false },
@@ -258,6 +258,7 @@ fun SettingsScreen(navController: NavHostController) {
                         stringResource(R.string.desconectar),
                         color = colorScheme.primary,
                         fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
                         fontFamily = poppinsFamily
                     )
                 },
@@ -266,6 +267,7 @@ fun SettingsScreen(navController: NavHostController) {
                         stringResource(R.string.certeza_sair_conta),
                         fontFamily = poppinsFamily,
                         fontSize = 16.sp,
+                        color = colorScheme.onBackground
                     )
                 },
                 confirmButton = {
@@ -283,15 +285,15 @@ fun SettingsScreen(navController: NavHostController) {
                     TextButton(onClick = { mostrarDialogDeslogar = false }) {
                         Text(
                             stringResource(R.string.cancelar),
-                            color = colorScheme.onSurfaceVariant,
+                            color = colorScheme.onBackground.copy(.75f),
                             fontFamily = poppinsFamily,
                             fontSize = 14.sp
                         )
                     }
                 },
                 modifier = Modifier
-                    .border(1.dp, Color.White, RoundedCornerShape(24.dp)),
-                containerColor = Color.Transparent,
+                    .border(2.dp, colorScheme.onBackground, RoundedCornerShape(24.dp)),
+                containerColor = if (theme) Color.Transparent else colorScheme.background,
                 shape = RoundedCornerShape(24.dp)
             )
         }

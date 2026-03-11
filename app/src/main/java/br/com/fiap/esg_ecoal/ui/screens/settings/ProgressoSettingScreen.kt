@@ -44,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +55,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -61,11 +63,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
+import br.com.fiap.esg_ecoal.factory.SettingsViewModelFactory
+import br.com.fiap.esg_ecoal.repository.SettingsRepository
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
+import dataStore
 
 data class Meta(
     val titulo: String,
@@ -75,6 +81,15 @@ data class Meta(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
+    val context = LocalContext.current
+
+    val settingsRepository = remember {
+        SettingsRepository(context.dataStore)
+    }
+    val viewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(settingsRepository)
+    )
+    val theme by viewModel.theme.collectAsState()
 
     val corConceito = when (conceito.lowercase()) {
         "environmental" -> Color(0xFF8DBD80)
@@ -108,6 +123,7 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
     var mostrarDialogApagarProgresso by remember {
         mutableStateOf(false)
     }
+
 
     Surface(
         modifier = Modifier
@@ -243,20 +259,20 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.85f))
+                    .background(colorScheme.background.copy(alpha = 0.85f))
             ) {
                 AlertDialog(
                     onDismissRequest = { mostrarDialogApagarProgresso = false },
-                    containerColor = Color.Transparent,
+                    containerColor = if (theme) Color.Transparent else colorScheme.background,
                     modifier = Modifier
                         .fillMaxWidth(fraction = 1f)
-                        .border(1.dp, Color.White, RoundedCornerShape(24.dp)),
+                        .border(1.dp, colorScheme.onBackground, RoundedCornerShape(24.dp)),
                     confirmButton = {
                         TextButton(onClick = {}) {
                             Text(
                                 stringResource(R.string.sim),
                                 style = TextStyle(
-                                    color = colorScheme.primary,
+                                    color = colorScheme.error,
                                     fontWeight = FontWeight.Bold,
                                     fontFamily = poppinsFamily,
                                     fontSize = 18.sp
@@ -270,7 +286,7 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                                 stringResource(R.string.cancelar),
                                 style = TextStyle(
                                     fontWeight = FontWeight.ExtraBold,
-                                    color = colorScheme.onSurfaceVariant,
+                                    color = colorScheme.onBackground.copy(.75f),
                                     fontFamily = poppinsFamily,
                                     fontSize = 16.sp
                                 )
@@ -280,9 +296,10 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                     title = {
                         Text(
                             stringResource(R.string.apagar_progresso),
+                            color = colorScheme.primary,
                             fontSize = 24.sp,
-                            fontFamily = poppinsFamily,
-                            color = colorScheme.primary
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppinsFamily
                         )
                     },
                     text = {
@@ -290,7 +307,7 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                             stringResource(R.string.certeza_apagar_progresso_conceito, conceito),
                             fontFamily = poppinsFamily,
                             fontSize = 16.sp,
-                            color = colorScheme.onPrimary.copy(.65f)
+                            color = colorScheme.onBackground
                         )
                     }
                 )
