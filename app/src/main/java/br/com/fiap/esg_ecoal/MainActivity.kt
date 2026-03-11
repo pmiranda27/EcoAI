@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val temaEscuro by settingsRepository.temaFlow.collectAsState(initial = false)
             val language by settingsRepository.linguagemFlow.collectAsState(
-                initial = "pt"
+                initial = LocaleManager.getLocale()
             )
             val context = LocalContext.current
             val updatedContext = remember(language) {

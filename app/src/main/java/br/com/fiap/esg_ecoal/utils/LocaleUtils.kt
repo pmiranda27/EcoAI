@@ -15,4 +15,8 @@ object LocaleManager {
 
         return context.createConfigurationContext(config)
     }
+
+    fun getLocale(): String {
+        return Locale.getDefault().language
+    }
 }
