@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.ui.components.EsgTextField
 
 /**
@@ -50,7 +52,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
     ) {
         // Título principal
         Text(
-            text = "Bem-vindo de volta",
+            text = stringResource(R.string.bem_vinde_de_volta),
             style = MaterialTheme.typography.headlineSmall, // Estilo de fonte definido no tema.
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -59,7 +61,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
 
         // Subtítulo descritivo
         Text(
-            text = "Acesse sua conta EcoAl",
+            text = stringResource(R.string.acesse_sua_conta_ecoal),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,
             textAlign = TextAlign.Center
@@ -70,7 +72,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
 
         // Rótulo (Label) manual para o E-mail
         Text(
-            text = "E-mail corporativo",
+            text = stringResource(R.string.email_corporativo),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -88,7 +90,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
 
         // Rótulo (Label) manual para a Senha
         Text(
-            text = "Senha",
+            text = stringResource(R.string.senha),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -99,7 +101,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
         EsgTextField(
             value = password,
             onValueChange = { password = it },
-            placeholder = "Digite sua senha",
+            placeholder = stringResource(R.string.digite_sua_senha),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -107,8 +109,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
                 val iconColor = if (passwordVisible) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        painter = painterResource(id = br.com.fiap.esg_ecoal.R.drawable.eye),
-                        contentDescription = "Mostrar Senha",
+                        painter = painterResource(id = R.drawable.eye),
+                        contentDescription = stringResource(R.string.mostrar_senha),
                         tint = iconColor
                     )
                 }
@@ -117,7 +119,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
 
         // Texto clicável "Esqueceu sua senha?"
         Text(
-            text = "Esqueceu sua senha?",
+            text = stringResource(R.string.esqueceu_sua_senha),
             style = MaterialTheme.typography.labelMedium.copy(fontSize = 14.sp),
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
@@ -143,7 +145,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             )
         ) {
             // Texto dentro do botão.
-            Text("ENTRAR", fontWeight = FontWeight.Black, color = Color.White)
+            Text(stringResource(R.string.entrar), fontWeight = FontWeight.Black, color = Color.White)
         }
     }
 }

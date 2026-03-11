@@ -15,4 +15,5 @@ sealed class ScreenRoute(val route: String) {
             return "progresso_setting_screen/${conceitoEsg}"
         }
     }
+    data object Dashboard : ScreenRoute("dashboard_screen")
 }

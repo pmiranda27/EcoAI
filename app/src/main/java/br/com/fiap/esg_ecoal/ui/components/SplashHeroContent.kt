@@ -15,10 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.fiap.esg_ecoal.R
 
 @Composable
 fun SplashHeroContent(
@@ -35,7 +37,7 @@ fun SplashHeroContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Transforme sua empresa com sustentabilidade",
+            text = stringResource(R.string.transforme_sua_empresa_com_sustentabilidade),
             color = Color.White,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
@@ -45,7 +47,7 @@ fun SplashHeroContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Gerencie indicadores ambientais, sociais e de governança de forma simples e eficiente.",
+            text = stringResource(R.string.gerencie_indicadores_ambientais_sociais_e_governanca_forma_simples),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White.copy(alpha = 0.8f),
             textAlign = TextAlign.Center
@@ -54,9 +56,9 @@ fun SplashHeroContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            EsgPill("Ambiental")
-            EsgPill("Social")
-            EsgPill("Governança")
+            EsgPill(stringResource(R.string.ambiental))
+            EsgPill(stringResource(R.string.social))
+            EsgPill(stringResource(R.string.governanca))
         }
     }
 }

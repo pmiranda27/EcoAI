@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import br.com.fiap.esg_ecoal.ui.screens.DetailsDashboardScreen
 import br.com.fiap.esg_ecoal.ui.screens.HomeScreen
 import br.com.fiap.esg_ecoal.ui.screens.SplashScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.IdiomaScreen
@@ -17,7 +18,7 @@ import br.com.fiap.esg_ecoal.ui.screens.settings.SobreScreen
 fun SetupNavigation(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = ScreenRoute.Settings.route
+        startDestination = ScreenRoute.Splash.route
     ) {
         // Rota da Splash: Ela gerencia internamente as gavetas de Login e Cadastro
         composable(route = ScreenRoute.Splash.route) {
@@ -65,6 +66,10 @@ fun SetupNavigation(navController: NavHostController) {
         ) { backStackEntry ->
             val conceitoEsg = backStackEntry.arguments?.getString("conceitoEsg")
             ProgressoSettingScreen(conceito = conceitoEsg!!, navController = navController)
+        }
+
+        composable(route = ScreenRoute.Dashboard.route){
+            DetailsDashboardScreen(navController = navController)
         }
     }
 }

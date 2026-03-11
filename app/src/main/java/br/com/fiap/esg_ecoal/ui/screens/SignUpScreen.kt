@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.com.fiap.esg_ecoal.ui.components.EsgTextField
+import br.com.fiap.esg_ecoal.R
 
 /**
  * Componente que representa o conteúdo da gaveta (Bottom Sheet) de Criar conta.
@@ -51,7 +53,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
     ) {
         // Título principal do Cadastro
         Text(
-            text = "Criar conta",
+            text = stringResource(R.string.criar_conta),
             style = MaterialTheme.typography.headlineSmall, // Fonte de destaque (título)
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -60,7 +62,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
 
         // Subtítulo descritivo
         Text(
-            text = "Comece a jornada ESG da sua empresa",
+            text = stringResource(R.string.comece_jornada_esg_empresa),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,
             textAlign = TextAlign.Center
@@ -71,7 +73,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
 
         // --- CAMPO NOME ---
         Text(
-            text = "Nome completo",
+            text = stringResource(R.string.nome_completo),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -80,14 +82,14 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         EsgTextField(
             value = name,
             onValueChange = { name = it },
-            placeholder = "Seu nome"
+            placeholder = stringResource(R.string.seu_nome)
         )
 
         Spacer(modifier = Modifier.height(16.dp)) // Espaçamento entre blocos de campos
 
         // --- CAMPO EMPRESA ---
         Text(
-            text = "Empresa",
+            text = stringResource(R.string.empresa),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -96,14 +98,14 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         EsgTextField(
             value = enterprise,
             onValueChange = { enterprise = it },
-            placeholder = "CNPJ da empresa"
+            placeholder = stringResource(R.string.cnpj_da_empresa)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // --- CAMPO E-MAIL ---
         Text(
-            text = "E-mail corporativo",
+            text = stringResource(R.string.email_corporativo),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -120,7 +122,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
 
         // --- CAMPO SENHA ---
         Text(
-            text = "Crie uma senha",
+            text = stringResource(R.string.crie_uma_senha),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -129,15 +131,15 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         EsgTextField(
             value = password,
             onValueChange = { password = it },
-            placeholder = "Mínimo 8 caracteres",
+            placeholder = stringResource(R.string.minimo_8_caracteres),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
                 val iconColor = if (passwordVisible) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        painter = painterResource(id = br.com.fiap.esg_ecoal.R.drawable.eye),
-                        contentDescription = "Mostrar Senha",
+                        painter = painterResource(id = R.drawable.eye),
+                        contentDescription = stringResource(R.string.mostrar_senha),
                         tint = iconColor
                     )
                 }
@@ -160,7 +162,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
             )
 
             Text(
-                text = "Concordo com os Termos de Uso e a Política de Privacidade da EcoAl.",
+                text = stringResource(R.string.concordo_termos_uso_e_politica_privacidade),
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.Gray,
                 // Modifier.clickable: Permite que o usuário clique no texto para marcar o checkbox também
@@ -185,7 +187,7 @@ fun SignUpScreen(onSignupSuccess: () -> Unit, onClose: () -> Unit) {
         ) {
             // Texto do botão que muda de cor se estiver desativado para melhor leitura
             Text(
-                text = "CRIAR MINHA CONTA",
+                text = stringResource(R.string.criar_minha_conta),
                 fontWeight = FontWeight.Black,
                 color = if (isAccepted) Color.White else Color.Gray
             )

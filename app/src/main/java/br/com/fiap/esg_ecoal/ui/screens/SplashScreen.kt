@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -82,7 +83,9 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
     }
 
     // --- ESTRUTURA VISUAL ---
-    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Black)) {
 
         // 1. COMPONENTE DE FUNDO: Extraído para profissionalizar o código e permitir reuso
         SplashBackground(alpha = contentAlpha)
@@ -90,7 +93,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
         // 2. LOGO ECOAL: Mantida na Screen devido à animação de posição ser muito específica
         Image(
             painter = painterResource(id = R.drawable.logo1),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.logo),
             modifier = Modifier
                 .align(Alignment.Center)
                 .offset(y = logoOffset) // Aplica o movimento de subida
@@ -116,18 +119,20 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
             // Botão "ENTRAR": Altera o estado para abrir a gaveta de LOGIN
             Button(
                 onClick = { currentSheet = SheetType.LOGIN },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
             ) {
-                Text("ENTRAR", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.entrar), fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             // Botão "Criar Conta": Componente customizado que abre a gaveta de SIGNUP
             GlassButton(
-                text = "Criar Conta",
+                text = stringResource(R.string.criar_conta),
                 onClick = { currentSheet = SheetType.SIGNUP }
             )
 
@@ -135,7 +140,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit, onNavigateToSignUp: () -> Unit) 
 
             // Nota de rodapé
             Text(
-                text = "Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.",
+                text = stringResource(R.string.voce_concorda_termos_de_uso_politica_privacidade),
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.White.copy(0.5f),
                 textAlign = TextAlign.Center
