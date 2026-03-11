@@ -13,6 +13,7 @@ import br.com.fiap.esg_ecoal.ui.screens.settings.IdiomaScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.ProgressoSettingScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.SettingsScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.SobreScreen
+import br.com.fiap.esg_ecoal.ui.screens.TaskUserScreen
 
 @Composable
 fun SetupNavigation(navController: NavHostController) {
@@ -41,9 +42,10 @@ fun SetupNavigation(navController: NavHostController) {
         // Rota para a tela principal do sistema (Dashboard ESG)
         composable(route = ScreenRoute.Home.route) {
             HomeScreen(
+                navController = navController,
                 onSettingsClick = { navController.navigate(ScreenRoute.Settings.route) },
                 onProfileClick = { },
-                )
+            )
         }
 
         composable(route = ScreenRoute.Settings.route){
@@ -70,6 +72,14 @@ fun SetupNavigation(navController: NavHostController) {
 
         composable(route = ScreenRoute.Dashboard.route){
             DetailsDashboardScreen(navController = navController)
+        }
+
+        composable(
+            route = ScreenRoute.Tasks.route,
+            arguments = listOf(navArgument("conceito") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val conceito = backStackEntry.arguments?.getString("conceito") ?: "Environmental"
+            TaskUserScreen(conceito = conceito, navController = navController)
         }
     }
 }
