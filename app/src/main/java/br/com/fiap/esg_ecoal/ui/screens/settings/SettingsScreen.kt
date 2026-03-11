@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Eco
@@ -25,16 +24,13 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -61,6 +57,7 @@ import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.factory.SettingsViewModelFactory
 import br.com.fiap.esg_ecoal.navigation.ScreenRoute
 import br.com.fiap.esg_ecoal.repository.SettingsRepository
+import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import dataStore
 
@@ -85,22 +82,7 @@ fun SettingsScreen(navController: NavHostController) {
     Scaffold(
         containerColor = colorScheme.surfaceVariant.copy(alpha = 0.3f), // Fundo suave baseado no tema
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.configuracoes),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colorScheme.primary
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.voltar), tint = colorScheme.primary)
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
-            )
+            AppBarDefaultWithGoBackButton(stringResource(R.string.configuracoes), navController)
         },
         bottomBar = {
             Surface(
