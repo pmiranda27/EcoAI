@@ -8,38 +8,59 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.fiap.esg_ecoal.navigation.ScreenRoute
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.runtime.getValue
 
-sealed class BottomNavItem(val title: String, val label: String, val icon: ImageVector, val route: String) {
-    object Ambiental : BottomNavItem("Ambiental", "Ambiental", Icons.Default.Eco, "task_user_screen/Ambiental")
-    object Social : BottomNavItem("Social", "Social", Icons.Default.Person, "task_user_screen/Social")
-    object Governanca : BottomNavItem("Governanca", "Governança", Icons.Default.AccountBalance, "task_user_screen/Governanca")
+sealed class BottomNavItem(val pilar: String, val label: String, val icon: ImageVector) {
+    object Environmental : BottomNavItem("Environmental", "Ambiental", Icons.Default.Eco)
+    object Social : BottomNavItem("Social", "Social", Icons.Default.Person)
+    object Governance : BottomNavItem("Governance", "Governança", Icons.Default.AccountBalance)
 }
 
 @Composable
-fun EsgBottomNavigation(currentRoute: String?, onNavigate: (String) -> Unit) {
+fun EsgBottomNavigation(navController: NavHostController) {
     val items = listOf(
-        BottomNavItem.Ambiental,
+        BottomNavItem.Environmental,
         BottomNavItem.Social,
-        BottomNavItem.Governanca
+        BottomNavItem.Governance
     )
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val currentArgument = navBackStackEntry?.arguments?.getString("conceito")
 
     NavigationBar(
         containerColor = Color.White,
         tonalElevation = 8.dp
     ) {
         items.forEach { item ->
-            val selected = currentRoute?.contains(item.title, ignoreCase = true) == true
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentArgument = navBackStackEntry?.arguments?.getString("conceito")
+
+            val selected = currentArgument?.equals(item.pilar, ignoreCase = true) == true
+
             val activeColor = when (item) {
-                BottomNavItem.Ambiental -> Color(0xFFD35D6E)
-                BottomNavItem.Social -> Color(0xFF8A588B)
-                BottomNavItem.Governanca -> Color(0xFF3E5271)
+                BottomNavItem.Environmental -> Color(0xFF8DBD80)
+                BottomNavItem.Social -> Color(0xFFED4C5C)
+                BottomNavItem.Governance -> Color(0xFFEB9C6E)
             }
 
             NavigationBarItem(
                 selected = selected,
-                onClick = { onNavigate(item.route) },
+                onClick = {
+                    navController.navigate(ScreenRoute.Tasks.createRoute(item.pilar)) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
                 icon = {
                     Icon(
                         imageVector = item.icon,
@@ -51,11 +72,12 @@ fun EsgBottomNavigation(currentRoute: String?, onNavigate: (String) -> Unit) {
                     Text(
                         text = item.label,
                         fontSize = 10.sp,
+                        fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                         color = if (selected) activeColor else Color.LightGray
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = activeColor.copy(alpha = 0.1f)
+                    indicatorColor = activeColor.copy(alpha = 0.2f)
                 )
             )
         }

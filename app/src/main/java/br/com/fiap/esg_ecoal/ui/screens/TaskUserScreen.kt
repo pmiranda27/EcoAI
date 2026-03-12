@@ -15,15 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.components.EsgBottomNavigation
-import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 
 @Composable
 fun TaskUserScreen(conceito: String, navController: NavHostController) {
@@ -31,10 +31,17 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val accentColor = when (conceito.lowercase()) {
-        "environmental", "ambiental" -> Color(0xFFD35D6E)
-        "social" -> Color(0xFF8A588B)
-        "governance", "governança", "governanca" -> Color(0xFF3E5271)
-        else -> Color(0xFF5F5785)
+        "environmental" -> Color(0xFF8DBD80)
+        "social" -> Color(0xFFED4C5C)
+        "governance" -> Color(0xFFEB9C6E)
+        else -> Color(0xFF8DBD80)
+    }
+
+    val tituloExibicao = when (conceito.lowercase()) {
+        "environmental" -> "Ambiental"
+        "social" -> "Social"
+        "governance" -> "Governança"
+        else -> conceito
     }
 
     Scaffold(
@@ -44,7 +51,7 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { },
-                containerColor = Color(0xFFD35D6E),
+                containerColor = accentColor,
                 contentColor = Color.White,
                 shape = CircleShape
             ) {
@@ -52,12 +59,7 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
             }
         },
         bottomBar = {
-            EsgBottomNavigation(currentRoute = currentRoute) { route ->
-                navController.navigate(route) {
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            }
+            EsgBottomNavigation(navController = navController)
         }
     ) { innerPadding ->
         Column(
@@ -65,21 +67,23 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                 .padding(innerPadding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(20.dp)
+                .padding(horizontal = 20.dp)
         ) {
+            Spacer(modifier = Modifier.height(20.dp))
+
             Text(
-                text = conceito,
-                style = MaterialTheme.typography.titleMedium.copy(
+                text = tituloExibicao,
+                style = MaterialTheme.typography.titleLarge.copy(
                     color = accentColor,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.ExtraBold
                 )
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            when {
-                conceito.lowercase().contains("amb") -> {
+            when (conceito.lowercase()) {
+                "environmental" -> {
                     ExpandableTaskGroup("Ambiente Limpo", accentColor, listOf("Implementar coleta seletiva", "Criar pontos de reciclagem", "Reduzir uso de plástico descartável", "Descartar lixo eletrônico corretamente"))
                     ExpandableTaskGroup("Energia Sustentável", accentColor, listOf("Trocar lâmpadas por LED", "Desligar equipamentos fora do expediente", "Monitorar consumo mensal de energia", "Incentivar uso de iluminação natural"))
                     ExpandableTaskGroup("Gestão de Resíduos", accentColor, listOf("Separar resíduos recicláveis", "Reduzir desperdício de materiais", "Parceria com empresa de reciclagem", "Criar campanha interna de reciclagem"))
@@ -87,7 +91,7 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                     ExpandableTaskGroup("Redução de Carbono", accentColor, listOf("Incentivar trabalho remoto", "Promover uso de transporte sustentável", "Reduzir viagens corporativas desnecessárias", "Medir emissão de carbono da empresa"))
                     ExpandableTaskGroup("Materiais Sustentáveis", accentColor, listOf("Priorizar materiais recicláveis", "Reduzir uso de papel", "Utilizar fornecedores sustentáveis", "Adotar embalagens ecológicas"))
                 }
-                conceito.lowercase().contains("soc") -> {
+                "social" -> {
                     ExpandableTaskGroup("Diversidade e Inclusão", accentColor, listOf("Criar política de diversidade", "Treinamento sobre inclusão", "Processos seletivos inclusivos", "Monitorar diversidade nas equipes"))
                     ExpandableTaskGroup("Bem-estar dos Funcionários", accentColor, listOf("Programa de saúde mental", "Oferecer horário flexível", "Pesquisa de satisfação interna", "Promover atividades de integração"))
                     ExpandableTaskGroup("Desenvolvimento Profissional", accentColor, listOf("Oferecer cursos e treinamentos", "Criar programa de mentoria", "Incentivar capacitação profissional", "Avaliação de desempenho periódica"))
@@ -95,7 +99,7 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                     ExpandableTaskGroup("Ambiente de Trabalho Seguro", accentColor, listOf("Treinamento de segurança no trabalho", "Monitorar condições de trabalho", "Disponibilizar equipamentos de segurança", "Criar canal para reportar riscos"))
                     ExpandableTaskGroup("Igualdade de Oportunidades", accentColor, listOf("Garantir igualdade salarial", "Promover crescimento interno", "Avaliar promoções de forma justa", "Criar políticas contra discriminação"))
                 }
-                else -> {
+                "governance" -> {
                     ExpandableTaskGroup("Ética Corporativa", accentColor, listOf("Criar código de ética", "Treinamento de ética empresarial", "Criar canal de denúncias", "Revisar políticas internas"))
                     ExpandableTaskGroup("Transparência Empresarial", accentColor, listOf("Publicar relatório de sustentabilidade", "Divulgar metas ESG", "Compartilhar resultados com stakeholders", "Atualizar políticas de transparência"))
                     ExpandableTaskGroup("Gestão de Riscos", accentColor, listOf("Identificar riscos operacionais", "Criar plano de mitigação de riscos", "Monitorar riscos regularmente", "Revisar processos de segurança"))
@@ -104,6 +108,7 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                     ExpandableTaskGroup("Responsabilidade Corporativa", accentColor, listOf("Definir metas ESG claras", "Monitorar progresso das metas", "Criar comitê de sustentabilidade", "Avaliar impacto das decisões da empresa"))
                 }
             }
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
@@ -142,7 +147,7 @@ fun ExpandableTaskGroup(title: String, color: Color, tasks: List<String>) {
 
             AnimatedVisibility(visible = expanded) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                    Divider(color = Color(0xFFF0F0F0))
+                    HorizontalDivider(color = Color(0xFFF0F0F0))
                     tasks.forEach { task ->
                         var checked by remember { mutableStateOf(false) }
                         Row(
@@ -166,12 +171,11 @@ fun ExpandableTaskGroup(title: String, color: Color, tasks: List<String>) {
         }
     }
 }
-
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Preview Ambiental")
 @Composable
-fun TaskUserScreenPreview() {
+fun PreviewAmbiental() {
+    val fakeNavController = rememberNavController()
     ESGEcoalTheme {
-        val navController = rememberNavController()
-        TaskUserScreen(conceito = "Ambiental", navController = navController)
+        TaskUserScreen(conceito = "Environmental", navController = fakeNavController)
     }
 }
