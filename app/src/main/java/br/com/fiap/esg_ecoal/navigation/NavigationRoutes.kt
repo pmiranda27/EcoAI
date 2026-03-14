@@ -16,22 +16,22 @@ import br.com.fiap.esg_ecoal.ui.screens.settings.SobreScreen
 import br.com.fiap.esg_ecoal.ui.screens.TaskUserScreen
 
 @Composable
-fun SetupNavigation(navController: NavHostController) {
+fun SetupNavigation(
+    navController: NavHostController,
+    startDestination: String = ScreenRoute.Splash.route
+) {
     NavHost(
         navController = navController,
-        startDestination = ScreenRoute.Splash.route
+        startDestination = startDestination
     ) {
-        // Rota da Splash: Ela gerencia internamente as gavetas de Login e Cadastro
         composable(route = ScreenRoute.Splash.route) {
             SplashScreen(
                 onNavigateToLogin = {
-                    // Navega para a Home após o sucesso do Login na gaveta
                     navController.navigate(ScreenRoute.Home.route) {
                         popUpTo(ScreenRoute.Splash.route) { inclusive = true }
                     }
                 },
                 onNavigateToSignUp = {
-                    // Navega para a Home (ou uma tela de boas-vindas) após o Cadastro
                     navController.navigate(ScreenRoute.Home.route) {
                         popUpTo(ScreenRoute.Splash.route) { inclusive = true }
                     }
@@ -39,7 +39,6 @@ fun SetupNavigation(navController: NavHostController) {
             )
         }
 
-        // Rota para a tela principal do sistema (Dashboard ESG)
         composable(route = ScreenRoute.Home.route) {
             HomeScreen(
                 navController = navController,

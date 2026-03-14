@@ -38,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,30 +56,37 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import br.com.fiap.esg_ecoal.LocalTokenRepository
 import br.com.fiap.esg_ecoal.R
-import br.com.fiap.esg_ecoal.factory.SettingsViewModelFactory
+import br.com.fiap.esg_ecoal.factory.ViewModelFactory
 import br.com.fiap.esg_ecoal.navigation.ScreenRoute
+import br.com.fiap.esg_ecoal.repository.AuthRepository
 import br.com.fiap.esg_ecoal.repository.SettingsRepository
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
 import dataStore
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavHostController) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val settingsRepository = remember {
         SettingsRepository(context.dataStore)
     }
     val viewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModelFactory(settingsRepository)
+        factory = ViewModelFactory { SettingsViewModel(settingsRepository) }
     )
     val theme by viewModel.theme.collectAsState()
 
-    // Pegando as cores direto do seu MaterialTheme (Rosa)
+    val tokenRepository = LocalTokenRepository.current
+    val userName by tokenRepository?.userName?.collectAsState(initial = null) ?: remember { mutableStateOf(null) }
+    val userEmail by tokenRepository?.userEmail?.collectAsState(initial = null) ?: remember { mutableStateOf(null) }
+
     val colorScheme = MaterialTheme.colorScheme
 
     val imagemUsuario by remember {
@@ -88,7 +96,7 @@ fun SettingsScreen(navController: NavHostController) {
     var mostrarDialogDeslogar by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = colorScheme.background.copy(alpha = 1f), // Fundo suave baseado no tema
+        containerColor = colorScheme.background.copy(alpha = 1f),
         topBar = {
             AppBarDefaultWithGoBackButton(stringResource(R.string.configuracoes), navController)
         },
@@ -173,13 +181,13 @@ fun SettingsScreen(navController: NavHostController) {
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        "User",
+                        userName ?: "User",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorScheme.primary
                     )
                     Text(
-                        "User@empresa.com.br",
+                        userEmail ?: "user@empresa.com.br",
                         fontSize = 14.sp,
                         color = colorScheme.onSurfaceVariant
                     )
@@ -271,7 +279,18 @@ fun SettingsScreen(navController: NavHostController) {
                     )
                 },
                 confirmButton = {
-                    TextButton(onClick = { /* Logout */ }) {
+                    TextButton(onClick = {
+                        mostrarDialogDeslogar = false
+                        if (tokenRepository != null) {
+                            scope.launch {
+                                val authRepository = AuthRepository(tokenRepository)
+                                authRepository.logout()
+                                navController.navigate(ScreenRoute.Splash.route) {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }
+                        }
+                    }) {
                         Text(
                             stringResource(R.string.sim_sair),
                             color = colorScheme.error,

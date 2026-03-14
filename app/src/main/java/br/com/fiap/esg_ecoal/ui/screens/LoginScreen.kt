@@ -21,45 +21,47 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.fiap.esg_ecoal.R
+import br.com.fiap.esg_ecoal.data.model.UiState
 import br.com.fiap.esg_ecoal.ui.components.EsgTextField
 
-/**
- * Componente que representa o conteúdo da gaveta (Bottom Sheet) de Login.
- * @param onLoginSuccess Função chamada ao clicar no botão de entrar.
- * @param onClose Função para fechar a gaveta.
- */
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onClose: () -> Unit,
+    viewModel: AuthViewModel? = null
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
-    // --- ESTADOS DE MEMÓRIA (REACTIVE UI) ---
-    // remember: Faz o Compose "lembrar" do valor mesmo que a tela seja redesenhada.
-    // mutableStateOf: Cria um estado que, ao ser alterado, avisa o Compose para atualizar o desenho da tela.
+    val signInState by viewModel?.signInState?.collectAsState() ?: remember { mutableStateOf(null) }
+    val isLoading = signInState is UiState.Loading
 
-    var email by remember { mutableStateOf("") }        // Armazena o texto do campo de e-mail.
-    var password by remember { mutableStateOf("") }     // Armazena o texto bruto da senha.
-    var passwordVisible by remember { mutableStateOf(false) } // Controla se a senha aparece como texto ou asteriscos.
+    LaunchedEffect(signInState) {
+        if (signInState is UiState.Success) {
+            viewModel?.resetStates()
+            onLoginSuccess()
+        }
+    }
 
     val scrollState = rememberScrollState()
 
-    // --- LAYOUT DA TELA ---
     Column(
         modifier = Modifier
-            .fillMaxWidth()                   // Ocupa toda a largura disponível na gaveta.
-            .padding(24.dp)              // Adiciona um respiro de 24dp nas bordas internas.
-            .navigationBarsPadding()          // Evita que o conteúdo fique atrás da barra de navegação do sistema (botões do Android).
+            .fillMaxWidth()
+            .padding(24.dp)
+            .navigationBarsPadding()
             .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally // Centraliza os elementos filhos horizontalmente.
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título principal
         Text(
             text = stringResource(R.string.bem_vinde_de_volta),
-            style = MaterialTheme.typography.headlineSmall, // Estilo de fonte definido no tema.
+            style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
 
-        // Subtítulo descritivo
         Text(
             text = stringResource(R.string.acesse_sua_conta_ecoal),
             style = MaterialTheme.typography.bodyMedium,
@@ -67,16 +69,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             textAlign = TextAlign.Center
         )
 
-        // Espaço vertical fixo entre os textos e os campos.
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Rótulo (Label) manual para o E-mail
         Text(
             text = stringResource(R.string.email_corporativo),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth() // Garante que o texto ocupe a largura para o TextAlign funcionar.
+            modifier = Modifier.fillMaxWidth()
         )
         EsgTextField(
             value = email,
@@ -87,8 +87,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
-        // Rótulo (Label) manual para a Senha
         Text(
             text = stringResource(R.string.senha),
             style = MaterialTheme.typography.bodyMedium,
@@ -97,7 +95,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Campo de entrada de Senha
         EsgTextField(
             value = password,
             onValueChange = { password = it },
@@ -105,7 +102,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-                // Lógica de ícone dinâmico
                 val iconColor = if (passwordVisible) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
@@ -117,35 +113,57 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onClose: () -> Unit) {
             }
         )
 
-        // Texto clicável "Esqueceu sua senha?"
         Text(
             text = stringResource(R.string.esqueceu_sua_senha),
             style = MaterialTheme.typography.labelMedium.copy(fontSize = 14.sp),
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .fillMaxWidth()                  // Ocupa a largura total.
-                .padding(top = 8.dp)             // Pequena margem acima do texto.
-                .clickable { /* Futura lógica de recuperação de senha */ }, // Torna o texto clicável.
-            textAlign = TextAlign.End            // Alinha o texto à direita (fim).
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .clickable { },
+            textAlign = TextAlign.End
         )
 
-        // Espaço maior antes do botão final.
+        // Error message
+        if (signInState is UiState.Error) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = (signInState as UiState.Error).message,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botão principal de ação: ENTRAR
         Button(
-            onClick = onLoginSuccess,            // Executa a função de navegação passada por parâmetro.
+            onClick = {
+                if (viewModel != null) {
+                    viewModel.signIn(email, password)
+                } else {
+                    onLoginSuccess()
+                }
+            },
+            enabled = !isLoading,
             modifier = Modifier
-                .fillMaxWidth()                  // Botão largo para facilitar o clique.
-                .height(56.dp),                  // Altura padrão confortável para o polegar.
-            shape = RoundedCornerShape(16.dp),   // Cantos bem arredondados para um visual moderno.
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary // Cor de fundo do botão (rosa).
+                containerColor = MaterialTheme.colorScheme.primary
             )
         ) {
-            // Texto dentro do botão.
-            Text(stringResource(R.string.entrar), fontWeight = FontWeight.Black, color = Color.White)
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(stringResource(R.string.entrar), fontWeight = FontWeight.Black, color = Color.White)
+            }
         }
     }
 }

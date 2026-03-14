@@ -29,45 +29,66 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.fiap.esg_ecoal.LocalTokenRepository
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import kotlin.math.sin
 import br.com.fiap.esg_ecoal.R
+import br.com.fiap.esg_ecoal.data.model.UiState
+import br.com.fiap.esg_ecoal.factory.ViewModelFactory
 import br.com.fiap.esg_ecoal.navigation.ScreenRoute
+import br.com.fiap.esg_ecoal.repository.AnalyticsRepository
 import androidx.navigation.NavHostController
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     onSettingsClick: () -> Unit = {},
-    onProfileClick: () -> Unit = {}
+    onProfileClick: () -> Unit = {},
+    homeViewModel: HomeViewModel? = null
 ) {
-    var selectedTimeframe by remember { mutableStateOf("Mensal") } // Armazena o filtro de tempo selecionado ("Mensal", "Trimestral", "Anual")
-    val uriHandler = LocalUriHandler.current // Permite abrir URLs de forma segura
-    var visible by remember { mutableStateOf(false) } // Controla a visibilidade da animação
-
-    LaunchedEffect(Unit) { visible = true } // Controla a animação ao montar a tela
-
-    val nomeUsuario by remember {
-        mutableStateOf("User")
+    val viewModel = homeViewModel ?: run {
+        val vm: HomeViewModel = viewModel(
+            factory = ViewModelFactory { HomeViewModel(AnalyticsRepository()) }
+        )
+        vm
     }
 
+    var selectedTimeframe by remember { mutableStateOf("Mensal") }
+    val uriHandler = LocalUriHandler.current
+    var visible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) { visible = true }
+
+    // Load data when timeframe changes
+    LaunchedEffect(selectedTimeframe) {
+        viewModel.loadData(selectedTimeframe)
+    }
+
+    val dimensionsState by viewModel.dimensions.collectAsState()
+    val scoreState by viewModel.score.collectAsState()
+
+    val tokenRepository = LocalTokenRepository.current
+    val userName by tokenRepository?.userName?.collectAsState(initial = null)
+        ?: remember { mutableStateOf(null) }
+    val displayName = userName ?: "User"
+
     Scaffold(
-        topBar = { // Definição da barra superior (AppBar)
+        topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent // Cor transparente no fundo da barra
+                    containerColor = Color.Transparent
                 ),
                 title = {
                     Text(
-                        text = "ECOAI", // Título do app
+                        text = "ECOAI",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp
                     )
                 },
-                navigationIcon = { // Ícone de configurações no canto esquerdo
-                    IconButton(
-                        onClick = onSettingsClick, // Ação do clique no ícone de configurações
-                    ) {
+                navigationIcon = {
+                    IconButton(onClick = onSettingsClick) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = stringResource(R.string.configuracoes),
@@ -75,10 +96,8 @@ fun HomeScreen(
                         )
                     }
                 },
-                actions = { // Ícone do perfil no canto direito
-                    IconButton(
-                        onClick = onProfileClick, // Ação do clique no ícone de perfil
-                    ) {
+                actions = {
+                    IconButton(onClick = onProfileClick) {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = stringResource(R.string.perfil),
@@ -88,63 +107,106 @@ fun HomeScreen(
                 }
             )
         }
-    ) { innerPadding -> // Espaçamento interno da tela, utilizado para evitar sobreposição com a barra
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding) // Adiciona espaçamento interno
-                .fillMaxSize() // Preenche toda a tela
-                .verticalScroll(rememberScrollState()) // Permite rolagem vertical
-                .padding(horizontal = 24.dp) // Adiciona padding nas bordas laterais
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
         ) {
             // 1. INTRODUÇÃO
-            Spacer(modifier = Modifier.height(16.dp)) // Espaço entre os elementos
-            Text(text = stringResource(R.string.ola_usuario, nomeUsuario), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold) // Saudação
-            Text(text = stringResource(R.string.veja_desempenho_esg_empresa), fontSize = 16.sp, color = Color.Gray) // Subtítulo informativo
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = stringResource(R.string.ola_usuario, displayName), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
+            Text(text = stringResource(R.string.veja_desempenho_esg_empresa), fontSize = 16.sp, color = Color.Gray)
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 2. GRÁFICOS + FILTROS (DIRETAMENTE LIGADOS)
+            // 2. GRÁFICOS + FILTROS
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.indicadores_criticos), fontWeight = FontWeight.Bold, fontSize = 18.sp) // Título da seção de indicadores
+                Text(stringResource(R.string.indicadores_criticos), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
 
-            // Filtros colados nos gráficos
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("Mensal", "Trimestral", "Anual").forEach { timeframe -> // Criação dos filtros de tempo
+                listOf("Mensal", "Trimestral", "Anual").forEach { timeframe ->
                     FilterChip(
-                        selected = selectedTimeframe == timeframe, // Verifica se o filtro está selecionado
-                        onClick = { selectedTimeframe = timeframe }, // Muda o filtro de tempo
-                        label = { Text(timeframe) }, // Texto que aparece no filtro
+                        selected = selectedTimeframe == timeframe,
+                        onClick = { selectedTimeframe = timeframe },
+                        label = { Text(timeframe) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = colorScheme.primary, // Rosa selecionado
-                            selectedLabelColor = colorScheme.onPrimary // Texto contrastante
+                            selectedContainerColor = colorScheme.primary,
+                            selectedLabelColor = colorScheme.onPrimary
                         )
                     )
                 }
             }
 
-            AnimatedVisibility(visible = visible, enter = fadeIn() + slideInVertically()) { // Animação de entrada
-                Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                    EsgSection(stringResource(R.string.indicadores_ambientais), 72f, "+4.2%", true, colorScheme.secondary) // Seção com dados ambientais
-                    EsgSection(stringResource(R.string.indicadores_sociais), 58f, "-1.5%", false, colorScheme.tertiary) // Seção com dados sociais
-                    EsgSection(stringResource(R.string.governanca_corporativa), 15f, "+10.0%", true, colorScheme.onPrimaryContainer) // Seção com dados de governança
+            when (val dimState = dimensionsState) {
+                is UiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = colorScheme.primary)
+                    }
+                }
+                is UiState.Error -> {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(dimState.message, color = colorScheme.error)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TextButton(onClick = { viewModel.loadData(selectedTimeframe) }) {
+                            Text(stringResource(R.string.relatorios))
+                        }
+                    }
+                }
+                is UiState.Success -> {
+                    val dims = dimState.data
+                    AnimatedVisibility(visible = visible, enter = fadeIn() + slideInVertically()) {
+                        Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                            EsgSection(stringResource(R.string.indicadores_ambientais), (dims.environmental * 100).toFloat(), "", true, colorScheme.secondary)
+                            EsgSection(stringResource(R.string.indicadores_sociais), (dims.social * 100).toFloat(), "", true, colorScheme.tertiary)
+                            EsgSection(stringResource(R.string.governanca_corporativa), (dims.governance * 100).toFloat(), "", true, colorScheme.onPrimaryContainer)
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 3. SCORE ESG (AGORA EMBAIXO DO GRÁFICO)
-            Text(stringResource(R.string.resultado_consolidado), fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(bottom = 12.dp)) // Título do resultado consolidado
-            ScoreCard(720, 1000, "Maturidade Nível 3") // Exibe o card com o resultado do ESG
+            // 3. SCORE ESG
+            Text(stringResource(R.string.resultado_consolidado), fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(bottom = 12.dp))
+            when (val sc = scoreState) {
+                is UiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = colorScheme.primary)
+                    }
+                }
+                is UiState.Error -> {
+                    Text(sc.message, color = colorScheme.error)
+                }
+                is UiState.Success -> {
+                    val data = sc.data
+                    val level = when {
+                        data.scoreProgress <= 0.25 -> "Maturidade Nível 1"
+                        data.scoreProgress <= 0.50 -> "Maturidade Nível 2"
+                        data.scoreProgress <= 0.75 -> "Maturidade Nível 3"
+                        else -> "Maturidade Nível 4"
+                    }
+                    ScoreCard(data.totalScore.toInt(), data.globalScoreGoal.toInt(), level)
+                }
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             // 4. AÇÕES RÁPIDAS
-            Text(stringResource(R.string.gestao_operacional), fontWeight = FontWeight.Bold, fontSize = 18.sp) // Título da seção de ações rápidas
+            Text(stringResource(R.string.gestao_operacional), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { // Ações rápidas com ícones
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 QuickActionItem(
                     modifier = Modifier.weight(1f),
                     label = stringResource(R.string.metas_equipe),
@@ -152,16 +214,15 @@ fun HomeScreen(
                     onClick = {
                         navController.navigate(ScreenRoute.Tasks.createRoute("Environmental"))
                     }
-                ) // Ação "Metas Equipe"
+                )
                 QuickActionItem(Modifier.weight(1f),
-                    stringResource(R.string.relatorios), Icons.Default.Description) // Ação "Relatórios"
+                    stringResource(R.string.relatorios), Icons.Default.Description)
             }
 
             // 5. RADAR DE NOTÍCIAS
             Spacer(modifier = Modifier.height(32.dp))
-            Text(stringResource(R.string.radar_noticias_esg), fontWeight = FontWeight.Bold, fontSize = 18.sp) // Título da seção de notícias ESG
+            Text(stringResource(R.string.radar_noticias_esg), fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
-            // Notícias clicáveis
             NewsCard("Exame", "Nova taxonomia verde: O que muda para as empresas.") { uriHandler.openUri("https://exame.com/esg/") }
             NewsCard("Nações Unidas", "ODS Brasil: Relatório de transparência 2026.") { uriHandler.openUri("https://brasil.un.org/pt-br/sdgs") }
             NewsCard("Valor Econômico", "Governança e valor de mercado em alta.") { uriHandler.openUri("https://valor.globo.com/esg/") }
@@ -171,10 +232,9 @@ fun HomeScreen(
     }
 }
 
-// Componente para exibir a seção de cada indicador ESG com animação e gráfico
 @Composable
 fun EsgSection(title: String, percentage: Float, trend: String, isUp: Boolean, color: Color) {
-    val infiniteTransition = rememberInfiniteTransition(label = "wave") // Controla a animação de onda
+    val infiniteTransition = rememberInfiniteTransition(label = "wave")
     val waveOffset by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
         animationSpec = infiniteRepeatable(tween(3000, easing = LinearEasing), RepeatMode.Restart),
@@ -183,15 +243,17 @@ fun EsgSection(title: String, percentage: Float, trend: String, isUp: Boolean, c
 
     Column {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Gray) // Título da seção
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = if (isUp) Icons.Default.TrendingUp else Icons.Default.TrendingDown,
-                    contentDescription = null,
-                    tint = if (isUp) Color(0xFF2E7D32) else Color(0xFFD32F2F),
-                    modifier = Modifier.size(16.dp)
-                )
-                Text(trend, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = if (isUp) Color(0xFF2E7D32) else Color(0xFFD32F2F)) // Tendência do indicador
+            Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+            if (trend.isNotBlank()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = if (isUp) Icons.Default.TrendingUp else Icons.Default.TrendingDown,
+                        contentDescription = null,
+                        tint = if (isUp) Color(0xFF2E7D32) else Color(0xFFD32F2F),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(trend, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = if (isUp) Color(0xFF2E7D32) else Color(0xFFD32F2F))
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -205,8 +267,8 @@ fun EsgSection(title: String, percentage: Float, trend: String, isUp: Boolean, c
             Box(contentAlignment = Alignment.Center) {
                 Box(modifier = Modifier
                     .fillMaxSize()
-                    .background(color.copy(alpha = 0.12f))) // Fundo da seção com a cor customizada
-                Canvas(modifier = Modifier.fillMaxSize()) { // Gráfico animado
+                    .background(color.copy(alpha = 0.12f)))
+                Canvas(modifier = Modifier.fillMaxSize()) {
                     val width = size.width
                     val height = size.height
                     val fillHeight = height * (percentage / 100f)
@@ -222,59 +284,58 @@ fun EsgSection(title: String, percentage: Float, trend: String, isUp: Boolean, c
                         lineTo(width, height)
                         close()
                     }
-                    drawPath(path, color = color) // Desenha o gráfico animado
+                    drawPath(path, color = color)
                 }
-                Text("${percentage.toInt()}%", fontSize = 44.sp, fontWeight = FontWeight.Black, color = Color.White) // Exibe a porcentagem
+                Text("${percentage.toInt()}%", fontSize = 44.sp, fontWeight = FontWeight.Black, color = Color.White)
             }
         }
     }
 }
 
-// Componente para exibir o card com o score do ESG
 @Composable
 fun ScoreCard(current: Int, target: Int, level: String) {
+    val safeTarget = if (target == 0) 1 else target
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = colorScheme.primary) // Cor do card
+        colors = CardDefaults.cardColors(containerColor = colorScheme.primary)
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                 Column {
                     Text(stringResource(R.string.score_esg_atual), color = Color.White.copy(0.7f), fontSize = 14.sp)
-                    Text("$current", color = Color.White, fontSize = 36.sp, fontWeight = FontWeight.Bold) // Exibe o score atual
+                    Text("$current", color = Color.White, fontSize = 36.sp, fontWeight = FontWeight.Bold)
                 }
                 Surface(color = Color.White.copy(0.2f), shape = RoundedCornerShape(8.dp)) {
-                    Text(level, color = Color.White, modifier = Modifier.padding(8.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold) // Nível do score ESG
+                    Text(level, color = Color.White, modifier = Modifier.padding(8.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
             LinearProgressIndicator(
-                progress = current.toFloat() / target, // Barra de progresso
+                progress = current.toFloat() / safeTarget,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp)
                     .background(Color.White.copy(0.1f), CircleShape),
-                color = Color(0xFF4CAF50), // Cor da barra
-                trackColor = Color.Transparent // Cor do fundo da barra
+                color = Color(0xFF4CAF50),
+                trackColor = Color.Transparent
             )
             Text(stringResource(R.string.meta_da_empresa_pontos, target), color = Color.White.copy(0.6f), fontSize = 12.sp, modifier = Modifier.padding(top = 8.dp))
         }
     }
 }
 
-// Componente para exibir um item de ação rápida
 @Composable
 fun QuickActionItem(
     modifier: Modifier,
     label: String,
     icon: ImageVector,
-    onClick: () -> Unit = {} // Habilita o clique
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
             .height(90.dp)
-            .clickable { onClick() }, // Faz o card reagir ao clique
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = colorScheme.primary.copy(alpha = 0.60f)),
         border = BorderStroke(1.dp, colorScheme.primary)
@@ -286,7 +347,6 @@ fun QuickActionItem(
     }
 }
 
-// Componente para exibir as notícias ESG
 @Composable
 fun NewsCard(source: String, title: String, onClick: () -> Unit) {
     Card(
@@ -300,15 +360,14 @@ fun NewsCard(source: String, title: String, onClick: () -> Unit) {
     ) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(source.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Black, color = colorScheme.primary) // Fonte da notícia
-                Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis) // Título da notícia
+                Text(source.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Black, color = colorScheme.primary)
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
-            Icon(Icons.Default.ChevronRight, null, tint = Color.LightGray) // Ícone para indicar mais informações
+            Icon(Icons.Default.ChevronRight, null, tint = Color.LightGray)
         }
     }
 }
 
-// Preview para visualizar a tela no Android Studio
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun HomeScreenPreview() {

@@ -31,7 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
-import br.com.fiap.esg_ecoal.factory.SettingsViewModelFactory
+import br.com.fiap.esg_ecoal.factory.ViewModelFactory
 import br.com.fiap.esg_ecoal.repository.SettingsRepository
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
@@ -51,7 +51,7 @@ fun IdiomaScreen(navController: NavHostController) {
         SettingsRepository(context.dataStore)
     }
     val viewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModelFactory(settingsRepository)
+        factory = ViewModelFactory { SettingsViewModel(settingsRepository) }
     )
 
     // Estado que armazena qual idioma está selecionado (começa com "pt" - Português)

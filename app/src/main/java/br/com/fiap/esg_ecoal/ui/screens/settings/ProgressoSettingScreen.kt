@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,16 +69,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
-import br.com.fiap.esg_ecoal.factory.SettingsViewModelFactory
+import br.com.fiap.esg_ecoal.data.model.GoalResponse
+import br.com.fiap.esg_ecoal.data.model.UiState
+import br.com.fiap.esg_ecoal.factory.ViewModelFactory
+import br.com.fiap.esg_ecoal.repository.GoalsRepository
 import br.com.fiap.esg_ecoal.repository.SettingsRepository
+import br.com.fiap.esg_ecoal.ui.screens.GoalsViewModel
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.ui.theme.poppinsFamily
 import dataStore
-
-data class Meta(
-    val titulo: String,
-    val progresso: Float
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,10 +87,19 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
     val settingsRepository = remember {
         SettingsRepository(context.dataStore)
     }
-    val viewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModelFactory(settingsRepository)
+    val settingsViewModel: SettingsViewModel = viewModel(
+        factory = ViewModelFactory { SettingsViewModel(settingsRepository) }
     )
-    val theme by viewModel.theme.collectAsState()
+    val theme by settingsViewModel.theme.collectAsState()
+
+    val goalsViewModel: GoalsViewModel = viewModel(
+        factory = ViewModelFactory { GoalsViewModel(GoalsRepository()) }
+    )
+    val goalsState by goalsViewModel.goals.collectAsState()
+
+    LaunchedEffect(conceito) {
+        goalsViewModel.loadGoals(conceito)
+    }
 
     val corConceito = when (conceito.lowercase()) {
         "environmental" -> Color(0xFF8DBD80)
@@ -112,18 +122,9 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
         else -> "Error"
     }
 
-    val metasConceito = listOf(
-        Meta("Redução de emissão de carbono", 0.75f),
-        Meta("Uso de energia renovável", 0f),
-        Meta("Diversidade no ambiente de trabalho", 0.5f),
-        Meta("Transparência corporativa", 0.25f),
-        Meta("Gestão sustentável de resíduos", 1f)
-    )
-
     var mostrarDialogApagarProgresso by remember {
         mutableStateOf(false)
     }
-
 
     Surface(
         modifier = Modifier
@@ -133,33 +134,33 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
             topBar = {
                 CenterAlignedTopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent // Cor transparente no fundo da barra
+                        containerColor = Color.Transparent
                     ),
                     title = {
                         Text(
-                            text = stringResource(R.string.progresso), // Título do app
+                            text = stringResource(R.string.progresso),
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.SemiBold, // Peso médio para passar seriedade
-                                fontSize = 20.sp // Tamanho equilibrado para não dominar a tela
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 20.sp
                             )
                         )
                     },
-                    navigationIcon = { // Ícone de configurações no canto esquerdo
+                    navigationIcon = {
                         IconButton(
-                            onClick = { navController.popBackStack() }, // Ação do clique no ícone de configurações
+                            onClick = { navController.popBackStack() },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBackIosNew, // Ícone estilo iOS (mais fino e moderno)
+                                imageVector = Icons.Default.ArrowBackIosNew,
                                 contentDescription = stringResource(R.string.voltar),
-                                modifier = Modifier.size(24.dp) // Tamanho reduzido para um aspecto mais elegante
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     },
-                    actions = { // Ícone de apagar progresso no canto direito
+                    actions = {
                         IconButton(
                             onClick = {
                                 mostrarDialogApagarProgresso = true
-                            }, // Ação do clique no ícone de perfil
+                            },
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
@@ -173,86 +174,103 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
         ) { paddingValues ->
             Column(
                 modifier = Modifier
-                    .fillMaxSize() // Ocupa todo o espaço disponível
-                    .padding(paddingValues) // Aplica o padding vindo da Scaffold
-                    .padding(horizontal = 24.dp), // Adiciona margem lateral de 24dp
-                horizontalAlignment = Alignment.CenterHorizontally // Centraliza os itens na horizontal
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(32.dp)) // Espaço entre o topo e o ícone
+                Spacer(modifier = Modifier.height(32.dp))
 
-                // --- ÍCONE CENTRAL COM CÍRCULO SUAVE ---
                 Box(
                     modifier = Modifier
-                        .size(100.dp) // Define o tamanho do círculo
-                        .clip(CircleShape) // Corta o fundo em formato circular
-                        .background(corConceito.copy(alpha = 0.20f)), // Fundo leve com a cor primária
-                    contentAlignment = Alignment.Center // Centraliza o ícone dentro do círculo
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(corConceito.copy(alpha = 0.20f)),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = iconePagina, // Ícone de globo/idioma
-                        contentDescription = null, // Descrição opcional para acessibilidade
-                        modifier = Modifier.size(48.dp), // Tamanho do ícone
-                        tint = corConceito // Cor do ícone baseada no tema
+                        imageVector = iconePagina,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = corConceito
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp)) // Espaço entre ícone e título
+                Spacer(modifier = Modifier.height(24.dp))
 
-                // --- TEXTOS DE APOIO ---
                 Text(
                     text = tituloPagina,
-                    fontSize = 22.sp, // Tamanho da fonte do título
-                    fontWeight = FontWeight.Bold, // Fonte em negrito
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
                     color = colorScheme.onBackground
                 )
-                Spacer(modifier = Modifier.height(8.dp)) // Espaço entre título e subtítulo
+                Spacer(modifier = Modifier.height(8.dp))
 
-                BarraProgresso(true, corConceito, 0.5f) // Barra de progresso principal
+                when (val state = goalsState) {
+                    is UiState.Loading -> {
+                        Spacer(modifier = Modifier.height(32.dp))
+                        CircularProgressIndicator(color = corConceito)
+                    }
+                    is UiState.Error -> {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(state.message, color = colorScheme.error)
+                        TextButton(onClick = { goalsViewModel.loadGoals(conceito) }) {
+                            Text("Tentar novamente")
+                        }
+                    }
+                    is UiState.Success -> {
+                        val goals = state.data
+                        val mainProgress = if (goals.isEmpty()) 0f else {
+                            goals.map { goal ->
+                                if (goal.tasks.isEmpty()) 0f
+                                else goal.tasks.count { it.isCompleted }.toFloat() / goal.tasks.size
+                            }.average().toFloat()
+                        }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        BarraProgresso(true, corConceito, mainProgress)
 
-                Box(modifier = Modifier.fillMaxWidth(0.55f).height(1.dp).background(colorScheme.onBackground))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        Box(modifier = Modifier.fillMaxWidth(0.55f).height(1.dp).background(colorScheme.onBackground))
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(metasConceito) { meta ->
-                        Box(
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        LazyColumn(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-//                            shape = RoundedCornerShape(12.dp),
-//                            colors = CardDefaults.cardColors(
-//                                containerColor = colorScheme.primary.copy(
-//                                    alpha = 0.7f
-//                                )
-//                            )
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = meta.titulo,
-                                    fontSize = 15.sp,
-                                    textAlign = TextAlign.Center,
-                                    color = colorScheme.onBackground
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                BarraProgresso(false, corConceito, meta.progresso)
+                            items(goals) { goal ->
+                                val goalProgress = if (goal.tasks.isEmpty()) 0f
+                                else goal.tasks.count { it.isCompleted }.toFloat() / goal.tasks.size
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = goal.title,
+                                            fontSize = 15.sp,
+                                            textAlign = TextAlign.Center,
+                                            color = colorScheme.onBackground
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        BarraProgresso(false, corConceito, goalProgress)
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-
         }
         if (mostrarDialogApagarProgresso) {
             Box(
@@ -268,7 +286,16 @@ fun ProgressoSettingScreen(conceito: String, navController: NavHostController) {
                         .fillMaxWidth(fraction = 1f)
                         .border(1.dp, colorScheme.onBackground, RoundedCornerShape(24.dp)),
                     confirmButton = {
-                        TextButton(onClick = {}) {
+                        TextButton(onClick = {
+                            // Delete all goals for this dimension
+                            val currentState = goalsState
+                            if (currentState is UiState.Success) {
+                                currentState.data.forEach { goal ->
+                                    goalsViewModel.deleteGoal(goal.id)
+                                }
+                            }
+                            mostrarDialogApagarProgresso = false
+                        }) {
                             Text(
                                 stringResource(R.string.sim),
                                 style = TextStyle(
