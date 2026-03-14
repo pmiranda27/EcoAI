@@ -31,7 +31,6 @@ fun EsgBottomNavigation(navController: NavHostController) {
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
     val currentArgument = navBackStackEntry?.arguments?.getString("conceito")
 
     NavigationBar(
@@ -39,8 +38,6 @@ fun EsgBottomNavigation(navController: NavHostController) {
         tonalElevation = 8.dp
     ) {
         items.forEach { item ->
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentArgument = navBackStackEntry?.arguments?.getString("conceito")
 
             val selected = currentArgument?.equals(item.pilar, ignoreCase = true) == true
 
@@ -55,10 +52,9 @@ fun EsgBottomNavigation(navController: NavHostController) {
                 onClick = {
                     navController.navigate(ScreenRoute.Tasks.createRoute(item.pilar)) {
                         popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
+                            inclusive = false
                         }
                         launchSingleTop = true
-                        restoreState = true
                     }
                 },
                 icon = {

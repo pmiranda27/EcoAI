@@ -87,7 +87,7 @@ class GoalsViewModel(private val goalsRepository: GoalsRepository) : ViewModel()
 
     fun createTask(goalId: Int, title: String, description: String?, score: Double?) {
         viewModelScope.launch {
-            val result = goalsRepository.createTask(goalId, title, description, score)
+            val result = goalsRepository.createTask(goalId, title, description, score ?: 25.00)
             result.onSuccess {
                 currentDimension?.let { loadGoals(it) }
             }
