@@ -100,4 +100,6 @@
     <string name="mensal">Mensuel</string>
     <string name="trimestral">Trimestriel</string>
     <string name="anual">Annuel</string>
+    <string name="deletar_objetivo">Supprimer l’objectif</string>
+    <string name="deletar_tarefa">Supprimer la tâche</string>
 </resources>

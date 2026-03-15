@@ -99,4 +99,6 @@
     <string name="mensal">Monthly</string>
     <string name="trimestral">Quarterly</string>
     <string name="anual">Yearly</string>
+    <string name="deletar_objetivo">Delete Goal</string>
+    <string name="deletar_tarefa">Delete Task</string>
 </resources>
