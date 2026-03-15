@@ -93,4 +93,13 @@ class GoalsViewModel(private val goalsRepository: GoalsRepository) : ViewModel()
             }
         }
     }
+
+    fun deleteTask(goalId: Int, taskId: Int){
+        viewModelScope.launch {
+            val result = goalsRepository.deleteTask(goalId, taskId)
+            result.onSuccess {
+                currentDimension?.let { loadGoals(it) }
+            }
+        }
+    }
 }

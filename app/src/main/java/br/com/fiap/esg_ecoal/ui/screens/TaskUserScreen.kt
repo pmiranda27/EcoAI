@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,7 +74,10 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
 
     Scaffold(
         topBar = {
-            AppBarDefaultWithGoBackButton(title = stringResource(R.string.metas_equipe), navController = navController)
+            AppBarDefaultWithGoBackButton(
+                title = stringResource(R.string.metas_equipe),
+                navController = navController
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -120,6 +124,7 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                         CircularProgressIndicator(color = accentColor)
                     }
                 }
+
                 is UiState.Error -> {
                     Column(
                         modifier = Modifier
@@ -134,6 +139,7 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                         }
                     }
                 }
+
                 is UiState.Success -> {
                     val goals = state.data
                     if (goals.isEmpty()) {
@@ -143,7 +149,10 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                                 .padding(vertical = 32.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(stringResource(R.string.nenhuma_meta_encontrada), color = MaterialTheme.colorScheme.onBackground.copy(.85f))
+                            Text(
+                                stringResource(R.string.nenhuma_meta_encontrada),
+                                color = MaterialTheme.colorScheme.onBackground.copy(.85f)
+                            )
                         }
                     } else {
                         goals.forEach { goal ->
@@ -154,7 +163,11 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                                 onTaskToggle = { task ->
                                     goalsViewModel.toggleTask(goal.id, task)
                                 },
-                                onAddTask = { showCreateTaskDialog = goal.id }
+                                onAddTask = { showCreateTaskDialog = goal.id },
+                                onDeleteTask = { task ->
+                                    goalsViewModel.deleteTask(goal.id, task.id)
+                                },
+                                onDeleteTaskGroup = { goalsViewModel.deleteGoal(goal.id) }
                             )
                         }
                     }
@@ -193,7 +206,9 @@ fun ExpandableTaskGroup(
     color: Color,
     tasks: List<TaskResponse>,
     onTaskToggle: (TaskResponse) -> Unit,
-    onAddTask: () -> Unit = {}
+    onAddTask: () -> Unit = {},
+    onDeleteTask: (TaskResponse) -> Unit = {},
+    onDeleteTaskGroup: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -282,17 +297,51 @@ fun ExpandableTaskGroup(
                                         )
                                     }
                                 }
+                                Spacer(modifier = Modifier.weight(1f))
+                                IconButton(
+                                    onClick = { onDeleteTask(task) }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = stringResource(R.string.deletar_tarefa)
+                                    )
+                                }
                             }
                         }
                     }
-                    // Add task button
-                    TextButton(
-                        onClick = onAddTask,
-                        modifier = Modifier.fillMaxWidth()
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.background, modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(stringResource(R.string.adicionar_tarefa), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.background)
+                        Spacer(modifier = Modifier.weight(1f))
+                        TextButton(
+                            onClick = onAddTask,
+                        ) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.background,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                stringResource(R.string.adicionar_tarefa),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.background
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(
+                            onClick = onDeleteTaskGroup
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.deletar_objetivo),
+                                tint = MaterialTheme.colorScheme.background
+                            )
+                        }
                     }
                 }
             }
