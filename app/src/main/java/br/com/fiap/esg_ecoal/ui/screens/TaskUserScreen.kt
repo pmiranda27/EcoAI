@@ -1,5 +1,6 @@
 package br.com.fiap.esg_ecoal.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,12 +15,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import br.com.fiap.esg_ecoal.data.model.GoalResponse
 import br.com.fiap.esg_ecoal.data.model.TaskResponse
 import br.com.fiap.esg_ecoal.data.model.UiState
 import br.com.fiap.esg_ecoal.factory.ViewModelFactory
@@ -30,6 +31,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.components.EsgBottomNavigation
+import br.com.fiap.esg_ecoal.R
 
 @Composable
 fun TaskUserScreen(conceito: String, navController: NavHostController) {
@@ -53,9 +55,9 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
     }
 
     val tituloExibicao = when (conceito.lowercase()) {
-        "environmental" -> "Ambiental"
-        "social" -> "Social"
-        "governance" -> "Governança"
+        "environmental" -> stringResource(R.string.ambiental)
+        "social" -> stringResource(R.string.social)
+        "governance" -> stringResource(R.string.governanca)
         else -> conceito
     }
 
@@ -71,13 +73,13 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
 
     Scaffold(
         topBar = {
-            AppBarDefaultWithGoBackButton(title = "Metas Equipe", navController = navController)
+            AppBarDefaultWithGoBackButton(title = stringResource(R.string.metas_equipe), navController = navController)
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateGoalDialog = true },
                 containerColor = accentColor,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.background,
                 shape = CircleShape
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
@@ -110,7 +112,9 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
             when (val state = goalsState) {
                 is UiState.Loading -> {
                     Box(
-                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = accentColor)
@@ -118,13 +122,15 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                 }
                 is UiState.Error -> {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(state.message, color = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.height(8.dp))
                         TextButton(onClick = { goalsViewModel.loadGoals(conceito) }) {
-                            Text("Tentar novamente")
+                            Text(stringResource(R.string.tentar_novamente))
                         }
                     }
                 }
@@ -132,10 +138,12 @@ fun TaskUserScreen(conceito: String, navController: NavHostController) {
                     val goals = state.data
                     if (goals.isEmpty()) {
                         Box(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Nenhuma meta encontrada", color = Color.Gray)
+                            Text(stringResource(R.string.nenhuma_meta_encontrada), color = MaterialTheme.colorScheme.onBackground.copy(.85f))
                         }
                     } else {
                         goals.forEach { goal ->
@@ -194,7 +202,7 @@ fun ExpandableTaskGroup(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Column {
@@ -208,30 +216,33 @@ fun ExpandableTaskGroup(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 18.sp
+                    ),
                     modifier = Modifier.weight(1f)
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         "${tasks.count { it.isCompleted }}/${tasks.size}",
-                        fontSize = 12.sp,
-                        color = Color.Gray
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(.75f)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
                         imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = null,
-                        tint = color
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
 
             AnimatedVisibility(visible = expanded) {
-                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(.75f))
                     if (tasks.isEmpty()) {
                         Text(
-                            "Nenhuma tarefa",
+                            stringResource(R.string.nenhuma_tarefa),
                             color = Color.Gray,
                             modifier = Modifier.padding(vertical = 12.dp),
                             fontSize = 14.sp
@@ -248,16 +259,26 @@ fun ExpandableTaskGroup(
                                 Checkbox(
                                     checked = task.isCompleted,
                                     onCheckedChange = { onTaskToggle(task) },
-                                    colors = CheckboxDefaults.colors(checkedColor = color)
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = color,
+                                        uncheckedColor = MaterialTheme.colorScheme.onBackground,
+                                        checkmarkColor = MaterialTheme.colorScheme.onBackground
+                                    )
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(text = task.title, style = MaterialTheme.typography.bodyMedium)
+                                    Text(
+                                        text = task.title,
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 15.sp
+                                        )
+                                    )
                                     if (task.score > 0) {
                                         Text(
                                             text = "${task.score.toInt()} pts",
-                                            fontSize = 11.sp,
-                                            color = Color.Gray
+                                            fontSize = 14.sp,
+                                            color = MaterialTheme.colorScheme.background
                                         )
                                     }
                                 }
@@ -269,9 +290,9 @@ fun ExpandableTaskGroup(
                         onClick = onAddTask,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.background, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Adicionar tarefa", fontSize = 13.sp)
+                        Text(stringResource(R.string.adicionar_tarefa), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.background)
                     }
                 }
             }
@@ -295,14 +316,14 @@ fun CreateGoalDialog(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Título") },
+                    label = { Text(stringResource(R.string.titulo)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Descrição (opcional)") },
+                    label = { Text(stringResource(R.string.descricao_opcional)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -312,12 +333,12 @@ fun CreateGoalDialog(
                 onClick = { onCreate(title, description.ifBlank { null }) },
                 enabled = title.isNotBlank()
             ) {
-                Text("Criar")
+                Text(stringResource(R.string.criar))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancelar))
             }
         }
     )
@@ -334,27 +355,27 @@ fun CreateTaskDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nova Tarefa") },
+        title = { Text(stringResource(R.string.nova_tarefa)) },
         text = {
             Column {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Título") },
+                    label = { Text(stringResource(R.string.titulo)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Descrição (opcional)") },
+                    label = { Text(stringResource(R.string.descricao_opcional)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = score,
                     onValueChange = { score = it },
-                    label = { Text("Pontuação (opcional)") },
+                    label = { Text(stringResource(R.string.pontuacao_opcional)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -370,18 +391,22 @@ fun CreateTaskDialog(
                 },
                 enabled = title.isNotBlank()
             ) {
-                Text("Criar")
+                Text(stringResource(R.string.criar))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancelar))
             }
         }
     )
 }
 
-@Preview(showBackground = true, name = "Preview Ambiental")
+@Preview(
+    showBackground = true,
+    name = "Preview Ambiental",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun PreviewAmbiental() {
     val fakeNavController = rememberNavController()

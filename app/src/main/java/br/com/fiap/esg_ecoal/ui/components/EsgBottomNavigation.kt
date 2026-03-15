@@ -34,7 +34,7 @@ fun EsgBottomNavigation(navController: NavHostController) {
     val currentArgument = navBackStackEntry?.arguments?.getString("conceito")
 
     NavigationBar(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         tonalElevation = 8.dp
     ) {
         items.forEach { item ->
@@ -61,7 +61,7 @@ fun EsgBottomNavigation(navController: NavHostController) {
                     Icon(
                         imageVector = item.icon,
                         contentDescription = item.label,
-                        tint = if (selected) activeColor else Color.LightGray
+                        tint = if (selected) activeColor else MaterialTheme.colorScheme.onBackground
                     )
                 },
                 label = {
@@ -69,7 +69,7 @@ fun EsgBottomNavigation(navController: NavHostController) {
                         text = item.label,
                         fontSize = 10.sp,
                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (selected) activeColor else Color.LightGray
+                        color = if (selected) activeColor else MaterialTheme.colorScheme.onBackground
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(

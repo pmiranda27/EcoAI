@@ -130,7 +130,11 @@ fun HomeScreen(
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("Mensal", "Trimestral", "Anual").forEach { timeframe ->
+                listOf(
+                    stringResource(R.string.mensal),
+                    stringResource(R.string.trimestral),
+                    stringResource(R.string.anual)
+                ).forEach { timeframe ->
                     FilterChip(
                         selected = selectedTimeframe == timeframe,
                         onClick = { selectedTimeframe = timeframe },
@@ -146,7 +150,9 @@ fun HomeScreen(
             when (val dimState = dimensionsState) {
                 is UiState.Loading -> {
                     Box(
-                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = colorScheme.primary)
@@ -154,7 +160,9 @@ fun HomeScreen(
                 }
                 is UiState.Error -> {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(dimState.message, color = colorScheme.error)
@@ -182,7 +190,9 @@ fun HomeScreen(
             Text(stringResource(R.string.resultado_consolidado), fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(bottom = 12.dp))
             when (val sc = scoreState) {
                 is UiState.Loading -> {
-                    Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(color = colorScheme.primary)
                     }
                 }
@@ -354,16 +364,16 @@ fun NewsCard(source: String, title: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(top = 12.dp)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Color.LightGray),
+        colors = CardDefaults.cardColors(containerColor = colorScheme.background),
+        border = BorderStroke(1.dp, colorScheme.onBackground.copy(.5f)),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(source.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Black, color = colorScheme.primary)
-                Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(source.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = colorScheme.primary)
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colorScheme.onBackground, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
-            Icon(Icons.Default.ChevronRight, null, tint = Color.LightGray)
+            Icon(Icons.Default.ChevronRight, null, tint = colorScheme.onBackground)
         }
     }
 }
