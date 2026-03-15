@@ -168,7 +168,7 @@ fun HomeScreen(
                         Text(dimState.message, color = colorScheme.error)
                         Spacer(modifier = Modifier.height(8.dp))
                         TextButton(onClick = { viewModel.loadData(selectedTimeframe) }) {
-                            Text(stringResource(R.string.relatorios))
+                            Text(stringResource(R.string.detalhes))
                         }
                     }
                 }
@@ -226,7 +226,12 @@ fun HomeScreen(
                     }
                 )
                 QuickActionItem(Modifier.weight(1f),
-                    stringResource(R.string.relatorios), Icons.Default.Description)
+                    label = stringResource(R.string.detalhes),
+                    icon = Icons.Default.Description,
+                    onClick = {
+                        navController.navigate(ScreenRoute.Dashboard.route)
+                    }
+                )
             }
 
             // 5. RADAR DE NOTÍCIAS

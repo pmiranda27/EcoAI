@@ -59,7 +59,7 @@
     <string name="resultado_consolidado">Resultado Consolidado</string>
     <string name="gestao_operacional">Gestão Operacional</string>
     <string name="metas_equipe">Metas Equipe</string>
-    <string name="relatorios">Relatórios</string>
+    <string name="detalhes">Detalhes</string>
     <string name="radar_noticias_esg">Radar de Notícias ESG</string>
     <string name="score_esg_atual">Pontuação ESG Atual</string>
     <string name="meta_da_empresa_pontos">Meta da Empresa: %1$d pontos</string>

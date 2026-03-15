@@ -58,7 +58,7 @@
     <string name="resultado_consolidado">Consolidated Results</string>
     <string name="gestao_operacional">Operational Management</string>
     <string name="metas_equipe">Team Goals</string>
-    <string name="relatorios">Reports</string>
+    <string name="detalhes">Details</string>
     <string name="radar_noticias_esg">ESG News Radar</string>
     <string name="score_esg_atual">Current ESG Score</string>
     <string name="meta_da_empresa_pontos">Company Goal: %1$d points</string>

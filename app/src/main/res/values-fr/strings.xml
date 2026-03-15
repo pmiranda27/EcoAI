@@ -59,7 +59,7 @@
     <string name="resultado_consolidado">Résultat consolidé</string>
     <string name="gestao_operacional">Gestion opérationnelle</string>
     <string name="metas_equipe">Objectifs de l’équipe</string>
-    <string name="relatorios">Rapports</string>
+    <string name="detalhes">Détails</string>
     <string name="radar_noticias_esg">Radar des actualités ESG</string>
     <string name="score_esg_atual">Score ESG actuel</string>
     <string name="meta_da_empresa_pontos">Objectif de l’entreprise: %1$d points</string>
