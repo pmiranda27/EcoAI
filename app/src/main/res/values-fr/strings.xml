@@ -88,4 +88,16 @@
     <string name="ambiental">Environnemental</string>
     <string name="social">Social</string>
     <string name="governanca">Gouvernance</string>
+    <string name="nenhuma_tarefa">Aucune tâche</string>
+    <string name="tentar_novamente">Réessayer</string>
+    <string name="nenhuma_meta_encontrada">Aucun objectif trouvé</string>
+    <string name="adicionar_tarefa">Ajouter une tâche</string>
+    <string name="titulo">Titre</string>
+    <string name="descricao_opcional">Description (optionnelle)</string>
+    <string name="criar">Créer</string>
+    <string name="pontuacao_opcional">Score (optionnel)</string>
+    <string name="nova_tarefa">Nouvelle tâche</string>
+    <string name="mensal">Mensuel</string>
+    <string name="trimestral">Trimestriel</string>
+    <string name="anual">Annuel</string>
 </resources>
