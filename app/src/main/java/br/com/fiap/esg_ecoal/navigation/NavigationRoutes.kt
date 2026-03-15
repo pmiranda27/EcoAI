@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import br.com.fiap.esg_ecoal.ui.screens.DetailsDashboardScreen
 import br.com.fiap.esg_ecoal.ui.screens.HomeScreen
 import br.com.fiap.esg_ecoal.ui.screens.SplashScreen
+import br.com.fiap.esg_ecoal.ui.screens.settings.PersonalDataScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.IdiomaScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.ProgressoSettingScreen
 import br.com.fiap.esg_ecoal.ui.screens.settings.SettingsScreen
@@ -50,6 +51,11 @@ fun SetupNavigation(
         composable(route = ScreenRoute.Settings.route){
             SettingsScreen(navController = navController)
         }
+
+        composable(route = ScreenRoute.PersonalData.route) {
+            PersonalDataScreen(navController = navController)
+        }
+
 
         composable(route = ScreenRoute.Idiomas.route){
             IdiomaScreen(navController = navController)

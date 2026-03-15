@@ -8,6 +8,7 @@ sealed class ScreenRoute(val route: String) {
     data object Splash : ScreenRoute("splash_screen")
     data object Home : ScreenRoute("home_screen") // Para onde o usuário vai após o Login
     data object Settings : ScreenRoute("settings_screen")
+    data object PersonalData : ScreenRoute("personal_data_screen")
     data object Idiomas : ScreenRoute("idiomas_screen")
     data object Sobre : ScreenRoute("sobre_screen")
     data object ProgressoSetting : ScreenRoute("progresso_setting_screen/{conceitoEsg}"){

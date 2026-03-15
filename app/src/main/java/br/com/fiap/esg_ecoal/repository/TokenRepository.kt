@@ -15,18 +15,22 @@ class TokenRepository(private val dataStore: DataStore<Preferences>) {
     private val USER_NAME_KEY = stringPreferencesKey("user_name")
     private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
 
+    private val USER_CNPJ_KEY = stringPreferencesKey("user_cnpj")
+
     val userName: Flow<String?> = dataStore.data.map { it[USER_NAME_KEY] }
     val userEmail: Flow<String?> = dataStore.data.map { it[USER_EMAIL_KEY] }
+    val userCnpj: Flow<String?> = dataStore.data.map { it[USER_CNPJ_KEY] }
 
     suspend fun saveToken(token: String) {
         RetrofitClient.token = token
         dataStore.edit { it[TOKEN_KEY] = token }
     }
 
-    suspend fun saveUser(name: String, email: String) {
+    suspend fun saveUser(name: String, email: String, cnpj: String) {
         dataStore.edit {
             it[USER_NAME_KEY] = name
             it[USER_EMAIL_KEY] = email
+            it[USER_CNPJ_KEY] = cnpj
         }
     }
 
@@ -44,6 +48,7 @@ class TokenRepository(private val dataStore: DataStore<Preferences>) {
             it.remove(TOKEN_KEY)
             it.remove(USER_NAME_KEY)
             it.remove(USER_EMAIL_KEY)
+            it.remove(USER_CNPJ_KEY)
         }
     }
 }

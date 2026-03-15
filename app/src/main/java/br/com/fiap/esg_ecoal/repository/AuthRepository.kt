@@ -14,14 +14,25 @@ class AuthRepository(private val tokenRepository: TokenRepository) {
         return result.fold(
             onSuccess = { response ->
                 tokenRepository.saveToken(response.token)
-                // Fetch user info from /me, fallback to email if it fails
+
+                // Busca informações do usuário
                 val meResult = safeApiCall { api.getMe() }
                 meResult.fold(
                     onSuccess = { user ->
-                        tokenRepository.saveUser(user.name, user.email)
+                        val cnpjParaSalvar = if (user.cnpj.isNullOrBlank()) "12345678000100" else user.cnpj
+
+                        tokenRepository.saveUser(
+                            user.name,
+                            user.email,
+                            cnpjParaSalvar
+                        )
                     },
                     onFailure = {
-                        tokenRepository.saveUser(email.substringBefore("@"), email)
+                        tokenRepository.saveUser(
+                            email.substringBefore("@"),
+                            email,
+                            "12345678000100"
+                        )
                     }
                 )
                 Result.success(Unit)

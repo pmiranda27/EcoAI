@@ -208,7 +208,9 @@ fun SettingsScreen(navController: NavHostController) {
                     SettingsOptionItem(
                         Icons.Default.Person,
                         stringResource(R.string.dados_pessoais)
-                    ) { }
+                    ) {
+                        navController.navigate(ScreenRoute.PersonalData.route)
+                    }
                     SettingsOptionItem(
                         Icons.Default.Lightbulb,
                         stringResource(R.string.tema_do_aplicativo),

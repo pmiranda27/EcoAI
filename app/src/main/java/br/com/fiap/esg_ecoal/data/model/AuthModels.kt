@@ -24,7 +24,8 @@ data class SignUpResponse(
     val name: String,
     val email: String,
     val role: String,
-    @SerializedName("company_id") val companyId: Int
+    @SerializedName("company_id") val companyId: Int,
+    val cnpj: String? = null
 )
 
 data class UserResponse(
@@ -32,5 +33,6 @@ data class UserResponse(
     val name: String,
     val email: String,
     val role: String,
-    @SerializedName("company_id") val companyId: Int
+    @SerializedName("company_id") val companyId: Int,
+    val cnpj: String? = null
 )
