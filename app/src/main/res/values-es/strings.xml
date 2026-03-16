@@ -102,4 +102,9 @@
     <string name="anual">Anual</string>
     <string name="deletar_objetivo">Eliminar objetivo</string>
     <string name="deletar_tarefa">Eliminar tarea</string>
+    <string name="suas_informacoes">Tu Información</string>
+    <string name="nome_usuario">Nombre de Usuario</string>
+    <string name="carregando">Cargando...</string>
+    <string name="sincronizando">Sincronizando...</string>
+    <string name="estes_dados_s_o_sincronizados_com_a_base_da_empresa">Estos datos están sincronizados con la base de datos de la empresa.</string>
 </resources>

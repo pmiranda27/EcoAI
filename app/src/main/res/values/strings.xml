@@ -101,4 +101,9 @@
     <string name="anual">Yearly</string>
     <string name="deletar_objetivo">Delete Goal</string>
     <string name="deletar_tarefa">Delete Task</string>
+    <string name="suas_informacoes">Your Information</string>
+    <string name="nome_usuario">Username</string>
+    <string name="carregando">Loading...</string>
+    <string name="sincronizando">Synchronizing...</string>
+    <string name="estes_dados_s_o_sincronizados_com_a_base_da_empresa">These data are synchronized with the company\'s database.</string>
 </resources>

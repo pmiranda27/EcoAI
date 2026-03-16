@@ -82,7 +82,7 @@ fun PersonalDataScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Suas Informações",
+                text = stringResource(R.string.suas_informacoes),
                 fontFamily = poppinsFamily,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -100,24 +100,24 @@ fun PersonalDataScreen(navController: NavHostController) {
 
                     InfoItemFuncional(
                         icone = Icons.Default.Person,
-                        titulo = "Nome de Usuário",
-                        valor = userName ?: "Carregando..."
+                        titulo = stringResource(R.string.nome_usuario),
+                        valor = userName ?: stringResource(R.string.carregando)
                     )
 
                     Divider(Modifier.padding(vertical = 16.dp), thickness = 0.5.dp, color = colorScheme.onBackground.copy(alpha = 0.1f))
 
                     InfoItemFuncional(
                         icone = Icons.Default.Email,
-                        titulo = "E-mail Corporativo",
-                        valor = userEmail ?: "Carregando..."
+                        titulo = stringResource(R.string.email_corporativo),
+                        valor = userEmail ?: stringResource(R.string.carregando)
                     )
 
                     Divider(Modifier.padding(vertical = 16.dp), thickness = 0.5.dp, color = colorScheme.onBackground.copy(alpha = 0.1f))
 
                     InfoItemFuncional(
                         icone = Icons.Default.Business,
-                        titulo = "CNPJ da Empresa",
-                        valor = userCnpj ?: "Sincronizando..."
+                        titulo = stringResource(R.string.cnpj_da_empresa),
+                        valor = userCnpj ?: stringResource(R.string.sincronizando)
                     )
                 }
             }
@@ -137,7 +137,7 @@ fun PersonalDataScreen(navController: NavHostController) {
                     Icon(Icons.Default.AssignmentInd, null, tint = colorScheme.primary, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        "Estes dados são sincronizados com a base da empresa.",
+                        stringResource(R.string.estes_dados_s_o_sincronizados_com_a_base_da_empresa),
                         fontSize = 12.sp,
                         color = colorScheme.onBackground.copy(alpha = 0.7f),
                         fontFamily = poppinsFamily

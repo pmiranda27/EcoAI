@@ -44,7 +44,7 @@ fun SetupNavigation(
             HomeScreen(
                 navController = navController,
                 onSettingsClick = { navController.navigate(ScreenRoute.Settings.route) },
-                onProfileClick = { },
+                onProfileClick = { navController.navigate(ScreenRoute.PersonalData.route) },
             )
         }
 
