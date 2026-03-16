@@ -2,7 +2,6 @@ package br.com.fiap.esg_ecoal.ui.screens.settings
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,7 +15,6 @@ import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Eco
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
@@ -42,12 +40,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -88,10 +83,6 @@ fun SettingsScreen(navController: NavHostController) {
     val userEmail by tokenRepository?.userEmail?.collectAsState(initial = null) ?: remember { mutableStateOf(null) }
 
     val colorScheme = MaterialTheme.colorScheme
-
-    val imagemUsuario by remember {
-        mutableStateOf(null)
-    }
 
     var mostrarDialogDeslogar by remember { mutableStateOf(false) }
 
@@ -139,43 +130,16 @@ fun SettingsScreen(navController: NavHostController) {
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(100.dp)
-                                .background(MaterialTheme.colorScheme.background, CircleShape)
-                                .clip(CircleShape)
-                                .border(2.dp, colorScheme.primary, CircleShape)
-                        ) {
-
-                            if (imagemUsuario == null) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = stringResource(R.string.foto),
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                    modifier = Modifier
-                                        .size(90.dp)
-                                        .align(Alignment.Center)
-                                )
-                            } else {
-                                Image(
-                                    painter = painterResource(R.drawable.no_photo),
-                                    contentDescription = stringResource(R.string.foto),
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.fillMaxSize()
-                                )
-                            }
-                        }
-
-                        Surface(
-                            color = colorScheme.primary,
-                            shape = CircleShape,
-                            modifier = Modifier
-                                .size(28.dp)
-                                .border(2.dp, Color.White, CircleShape)
+                                .size(110.dp)
+                                .background(colorScheme.background, CircleShape)
+                                .border(2.dp, colorScheme.primary, CircleShape),
+                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                Icons.Default.Edit,
-                                null,
-                                tint = colorScheme.onPrimary,
-                                modifier = Modifier.padding(6.dp)
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                tint = colorScheme.primary,
+                                modifier = Modifier.size(70.dp)
                             )
                         }
                     }
