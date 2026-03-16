@@ -108,4 +108,9 @@
     <string name="carregando">Loading...</string>
     <string name="sincronizando">Synchronizing...</string>
     <string name="estes_dados_s_o_sincronizados_com_a_base_da_empresa">These data are synchronized with the company\'s database.</string>
+    <string name="departamentos">Departments</string>
+    <string name="consumo_energia_realizado_vs_meta">Energy Consumption (Actual vs Target)</string>
+    <string name="minhas_contribuicoes_por_categoria">My Contributions by Category</string>
+    <string name="pontos">Points</string>
+    <string name="horas_treinamento_por_trimestre">Training Hours per Quarter</string>
 </resources>

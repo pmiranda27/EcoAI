@@ -109,4 +109,9 @@
     <string name="carregando">Carregando...</string>
     <string name="sincronizando">Sincronizando...</string>
     <string name="estes_dados_s_o_sincronizados_com_a_base_da_empresa">Estes dados são sincronizados com a base da empresa.</string>
+    <string name="departamentos">Departamentos</string>
+    <string name="consumo_energia_realizado_vs_meta">Consumo de Energia (Realizado vs Meta)</string>
+    <string name="minhas_contribuicoes_por_categoria">Minhas Contribuições por Categoria</string>
+    <string name="pontos">Pontos</string>
+    <string name="horas_treinamento_por_trimestre">Horas de Treinamento por Trimestre</string>
 </resources>

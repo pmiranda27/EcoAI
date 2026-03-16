@@ -109,4 +109,9 @@
     <string name="carregando">Chargement...</string>
     <string name="sincronizando">Synchronisation...</string>
     <string name="estes_dados_s_o_sincronizados_com_a_base_da_empresa">Ces données sont synchronisées avec la base de données de l\'entreprise.</string>
+    <string name="departamentos">Départements</string>
+    <string name="consumo_energia_realizado_vs_meta">Consommation d\'Énergie (Réel vs Objectif)</string>
+    <string name="minhas_contribuicoes_por_categoria">Mes Contributions par Catégorie</string>
+    <string name="pontos">Points</string>
+    <string name="horas_treinamento_por_trimestre">Heures de Formation par Trimestre</string>
 </resources>

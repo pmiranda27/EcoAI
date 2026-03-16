@@ -24,8 +24,6 @@ import br.com.fiap.esg_ecoal.ui.components.*
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import br.com.fiap.esg_ecoal.R
 import br.com.fiap.esg_ecoal.data.model.DashboardData
-import br.com.fiap.esg_ecoal.data.model.DimensionsResponse
-import br.com.fiap.esg_ecoal.data.model.ScoreResponse
 import br.com.fiap.esg_ecoal.data.model.UiState
 import br.com.fiap.esg_ecoal.factory.ViewModelFactory
 import br.com.fiap.esg_ecoal.repository.AnalyticsRepository
@@ -45,7 +43,9 @@ fun DetailsDashboardScreen(
             AppBarDefaultWithGoBackButton(stringResource(R.string.dashboard_detalhado), navController)
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Box(modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxSize()) {
             when (val state = uiState) {
                 is UiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 is UiState.Error -> {
@@ -70,14 +70,14 @@ fun DashboardContent(data: DashboardData) {
             .padding(16.dp)
     ) {
         Text(
-            text = "Detalhes",
+            text = stringResource(R.string.detalhes),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
         // Participação por Departamento (Doughnut Chart)
-        ChartCard(title = "Participação por Departamento") {
+        ChartCard(title = stringResource(R.string.participacao_por_departamento)) {
             val deptColors = listOf(
                 colorScheme.primary.toArgb(),
                 colorScheme.secondary.toArgb(),
@@ -87,20 +87,20 @@ fun DashboardContent(data: DashboardData) {
             DoughnutChartComponent(
                 dataMap = data.departmentParticipation,
                 colors = deptColors,
-                centerText = "Depts"
+                centerText = stringResource(R.string.departamentos)
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Consumo de Energia: Realizado vs Meta (Grouped Bar Chart)
-        ChartCard(title = "Consumo de Energia (Realizado vs Meta)") {
+        ChartCard(title = stringResource(R.string.consumo_energia_realizado_vs_meta)) {
             GroupedBarChartComponent(
                 labels = data.energyConsumption.labels,
                 valuesGroup1 = data.energyConsumption.realized,
                 valuesGroup2 = data.energyConsumption.goal,
-                label1 = "Realizado",
-                label2 = "Meta",
+                label1 = stringResource(R.string.realizado),
+                label2 = stringResource(R.string.meta),
                 colors = Pair(colorScheme.primary.toArgb(), Color.LightGray.toArgb())
             )
         }
@@ -108,11 +108,11 @@ fun DashboardContent(data: DashboardData) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Minhas Contribuições (Bar Chart)
-        ChartCard(title = "Minhas Contribuições por Categoria") {
+        ChartCard(title = stringResource(R.string.minhas_contribuicoes_por_categoria)) {
             BarChartComponent(
                 labels = data.myContributions.labels,
                 values = data.myContributions.values,
-                label = "Pontos",
+                label = stringResource(R.string.pontos),
                 barColor = colorScheme.secondary.toArgb()
             )
         }
@@ -120,11 +120,11 @@ fun DashboardContent(data: DashboardData) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Engajamento em Treinamentos (Bar Chart)
-        ChartCard(title = "Horas de Treinamento por Trimestre") {
+        ChartCard(title = stringResource(R.string.horas_treinamento_por_trimestre)) {
             BarChartComponent(
                 labels = data.trainingEngagement.labels,
                 values = data.trainingEngagement.values,
-                label = "Horas Totais",
+                label = stringResource(R.string.horas_totais),
                 barColor = colorScheme.tertiary.toArgb()
             )
         }
@@ -138,7 +138,7 @@ fun ChartCard(title: String, content: @Composable () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onBackground.copy(.15f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
