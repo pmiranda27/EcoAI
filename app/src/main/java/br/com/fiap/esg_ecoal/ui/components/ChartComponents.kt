@@ -2,8 +2,10 @@ package br.com.fiap.esg_ecoal.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 
@@ -67,6 +69,7 @@ fun DoughnutChartComponent(
     colors: List<Int>,
     centerText: String = ""
 ) {
+    val labelColor = MaterialTheme.colorScheme.onBackground.toArgb()
     AndroidView(
         factory = { context ->
             PieChart(context).apply {
@@ -75,6 +78,16 @@ fun DoughnutChartComponent(
                 description.isEnabled = false
                 legend.isEnabled = true
                 setDrawEntryLabels(false)
+                setCenterTextSize(18f)
+
+                legend.apply {
+                    isEnabled = true
+                    textSize = 16f
+                    textColor = labelColor
+                    formSize = 12f
+                    xEntrySpace = 10f
+                    yEntrySpace = 5f
+                }
             }
         },
         modifier = Modifier.fillMaxWidth().height(300.dp),
@@ -100,15 +113,30 @@ fun BarChartComponent(
     label: String,
     barColor: Int
 ) {
+    val labelColor = MaterialTheme.colorScheme.onBackground.toArgb()
+
     AndroidView(
         factory = { context ->
             BarChart(context).apply {
                 description.isEnabled = false
                 axisRight.isEnabled = false
+
                 xAxis.position = XAxis.XAxisPosition.BOTTOM
                 xAxis.setDrawGridLines(false)
                 xAxis.granularity = 1f
+                xAxis.labelRotationAngle = -22f
+
                 axisLeft.axisMinimum = 0f
+
+                xAxis.textColor = labelColor
+                xAxis.textSize = 14f
+
+                axisLeft.textColor = labelColor
+                axisLeft.textSize = 14f
+
+                legend.textColor = labelColor
+                legend.textSize = 16f
+
                 animateY(1000)
             }
         },
@@ -120,7 +148,8 @@ fun BarChartComponent(
 
             val dataSet = BarDataSet(entries, label).apply {
                 color = barColor
-                valueTextSize = 12f
+                valueTextSize = 14f
+                valueTextColor = labelColor
             }
 
             chart.data = BarData(dataSet)
@@ -139,16 +168,33 @@ fun GroupedBarChartComponent(
     label2: String,
     colors: Pair<Int, Int>
 ) {
+    val labelColor = MaterialTheme.colorScheme.onBackground.toArgb()
+
     AndroidView(
         factory = { context ->
             BarChart(context).apply {
                 description.isEnabled = false
                 axisRight.isEnabled = false
+
                 xAxis.position = XAxis.XAxisPosition.BOTTOM
                 xAxis.setDrawGridLines(false)
                 xAxis.granularity = 1f
                 xAxis.setCenterAxisLabels(true)
+
                 axisLeft.axisMinimum = 0f
+
+                // EIXO X
+                xAxis.textColor = labelColor
+                xAxis.textSize = 14f
+
+                // EIXO Y
+                axisLeft.textColor = labelColor
+                axisLeft.textSize = 14f
+
+                // LEGENDA
+                legend.textColor = labelColor
+                legend.textSize = 18f
+
                 animateY(1000)
             }
         },
@@ -157,8 +203,16 @@ fun GroupedBarChartComponent(
             val entries1 = valuesGroup1.mapIndexed { i, v -> BarEntry(i.toFloat(), v) }
             val entries2 = valuesGroup2.mapIndexed { i, v -> BarEntry(i.toFloat(), v) }
 
-            val set1 = BarDataSet(entries1, label1).apply { color = colors.first }
-            val set2 = BarDataSet(entries2, label2).apply { color = colors.second }
+            val set1 = BarDataSet(entries1, label1).apply {
+                color = colors.first
+                valueTextColor = labelColor
+                valueTextSize = 12f
+            }
+            val set2 = BarDataSet(entries2, label2).apply {
+                color = colors.second
+                valueTextColor = labelColor
+                valueTextSize = 12f
+            }
 
             val data = BarData(set1, set2)
 
