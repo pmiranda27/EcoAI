@@ -78,6 +78,8 @@
     <string name="seu_nome">Your name</string>
     <string name="empresa">Company</string>
     <string name="cnpj_da_empresa">Company CNPJ</string>
+    <string name="departamento">Department</string>
+    <string name="seu_departamento">Your department</string>
     <string name="crie_uma_senha">Create a password</string>
     <string name="minimo_8_caracteres">Minimum 8 characters</string>
     <string name="concordo_termos_uso_e_politica_privacidade">I agree to EcoAl\'s Terms of Use and Privacy Policy.</string>

@@ -79,6 +79,8 @@
     <string name="seu_nome">Votre nom</string>
     <string name="empresa">Entreprise</string>
     <string name="cnpj_da_empresa">CNPJ de l’entreprise</string>
+    <string name="departamento">Département</string>
+    <string name="seu_departamento">Votre département</string>
     <string name="crie_uma_senha">Créez un mot de passe</string>
     <string name="minimo_8_caracteres">Minimum 8 caractères</string>
     <string name="concordo_termos_uso_e_politica_privacidade">J’accepte les Conditions d’utilisation et la Politique de confidentialité d’EcoAl.</string>

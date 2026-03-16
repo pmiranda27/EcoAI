@@ -79,6 +79,8 @@
     <string name="seu_nome">Tu nombre</string>
     <string name="empresa">Empresa</string>
     <string name="cnpj_da_empresa">CNPJ de la empresa</string>
+    <string name="departamento">Departamento</string>
+    <string name="seu_departamento">Tu departamento</string>
     <string name="crie_uma_senha">Crea una contraseña</string>
     <string name="minimo_8_caracteres">Mínimo 8 caracteres</string>
     <string name="concordo_termos_uso_e_politica_privacidade">Acepto los Términos de Uso y la Política de Privacidad de EcoAl.</string>

@@ -31,6 +31,7 @@ fun SignUpScreen(
 ) {
     var name by remember { mutableStateOf("") }
     var cnpj by remember { mutableStateOf("") }
+    var department by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -101,6 +102,22 @@ fun SignUpScreen(
             value = cnpj,
             onValueChange = { cnpj = it },
             placeholder = stringResource(R.string.cnpj_da_empresa)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Departamento
+        Text(
+            text = stringResource(R.string.departamento),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth()
+        )
+        EsgTextField(
+            value = department,
+            onValueChange = { department = it },
+            placeholder = stringResource(R.string.seu_departamento)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -186,7 +203,7 @@ fun SignUpScreen(
         Button(
             onClick = {
                 if (viewModel != null) {
-                    viewModel.signUp(name, email, password, cnpj)
+                    viewModel.signUp(name, email, password, cnpj, department)
                 } else {
                     onSignupSuccess()
                 }

@@ -16,7 +16,8 @@ data class SignUpRequest(
     val email: String,
     val password: String,
     val role: String,
-    val cnpj: String
+    val cnpj: String,
+    val department: String,
 )
 
 data class SignUpResponse(
@@ -25,7 +26,8 @@ data class SignUpResponse(
     val email: String,
     val role: String,
     @SerializedName("company_id") val companyId: Int,
-    val cnpj: String? = null
+    val cnpj: String? = null,
+    val department: String,
 )
 
 data class UserResponse(

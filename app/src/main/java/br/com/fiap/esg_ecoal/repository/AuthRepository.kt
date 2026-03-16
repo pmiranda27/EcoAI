@@ -45,10 +45,11 @@ class AuthRepository(private val tokenRepository: TokenRepository) {
         name: String,
         email: String,
         password: String,
-        cnpj: String
+        cnpj: String,
+        department: String
     ): Result<SignUpResponse> {
         return safeApiCall {
-            api.signUp(SignUpRequest(name, email, password, role = "member", cnpj = cnpj))
+            api.signUp(SignUpRequest(name, email, password, role = "member", cnpj = cnpj, department))
         }
     }
 

@@ -1,5 +1,6 @@
 package br.com.fiap.esg_ecoal.repository
 
+import br.com.fiap.esg_ecoal.data.model.DashboardData
 import br.com.fiap.esg_ecoal.data.model.DimensionsResponse
 import br.com.fiap.esg_ecoal.data.model.ScoreResponse
 import br.com.fiap.esg_ecoal.network.RetrofitClient
@@ -14,5 +15,9 @@ class AnalyticsRepository {
 
     suspend fun getScore(): Result<ScoreResponse> {
         return safeApiCall { api.getScore() }
+    }
+
+    suspend fun getFullDashboard(): Result<DashboardData> {
+        return safeApiCall { api.getDashboard() }
     }
 }

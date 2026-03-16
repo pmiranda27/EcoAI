@@ -2,6 +2,7 @@ package br.com.fiap.esg_ecoal.network
 
 import br.com.fiap.esg_ecoal.data.model.CreateGoalRequest
 import br.com.fiap.esg_ecoal.data.model.CreateTaskRequest
+import br.com.fiap.esg_ecoal.data.model.DashboardData
 import br.com.fiap.esg_ecoal.data.model.DimensionsResponse
 import br.com.fiap.esg_ecoal.data.model.GoalResponse
 import br.com.fiap.esg_ecoal.data.model.ScoreResponse
@@ -37,6 +38,9 @@ interface ApiService {
 
     @GET("api/analytics/score")
     suspend fun getScore(): Response<ScoreResponse>
+
+    @GET("api/analytics/dashboard")
+    suspend fun getDashboard(): Response<DashboardData>
 
     @GET("api/goals")
     suspend fun getGoals(@Query("dimension") dimension: String? = null): Response<List<GoalResponse>>

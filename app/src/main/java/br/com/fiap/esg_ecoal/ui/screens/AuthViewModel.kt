@@ -27,10 +27,10 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun signUp(name: String, email: String, password: String, cnpj: String) {
+    fun signUp(name: String, email: String, password: String, cnpj: String, department: String) {
         _signUpState.value = UiState.Loading
         viewModelScope.launch {
-            val signUpResult = authRepository.signUp(name, email, password, cnpj)
+            val signUpResult = authRepository.signUp(name, email, password, cnpj, department)
             signUpResult.fold(
                 onSuccess = {
                     // Auto sign-in after successful sign-up
