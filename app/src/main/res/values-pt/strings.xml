@@ -98,7 +98,7 @@
     <string name="descricao_opcional">Descrição (opcional)</string>
     <string name="criar">Criar</string>
     <string name="pontuacao_opcional">Pontuação (opcional)</string>
-    <string name="nova_tarefa">nova_tarefa</string>
+    <string name="nova_tarefa">Nova Tarefa</string>
     <string name="mensal">Mensal</string>
     <string name="trimestral">Trimestral</string>
     <string name="anual">Anual</string>
@@ -114,4 +114,5 @@
     <string name="minhas_contribuicoes_por_categoria">Minhas Contribuições por Categoria</string>
     <string name="pontos">Pontos</string>
     <string name="horas_treinamento_por_trimestre">Horas de Treinamento por Trimestre</string>
+    <string name="nova_meta">Nova Meta</string>
 </resources>

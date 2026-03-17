@@ -99,7 +99,12 @@ fun SettingsScreen(navController: NavHostController) {
                 color = MaterialTheme.colorScheme.background,
                 shadowElevation = 8.dp
             ) {
-                Box(modifier = Modifier.padding(20.dp), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .navigationBarsPadding(),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
                         stringResource(R.string.sair_da_conta),
                         color = colorScheme.error,
