@@ -5,7 +5,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -13,8 +23,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,9 +55,6 @@ import br.com.fiap.esg_ecoal.ui.components.AppBarDefaultWithGoBackButton
 import br.com.fiap.esg_ecoal.ui.theme.ESGEcoalTheme
 import dataStore
 
-/**
- * Data class para estruturar as opções de idioma (ID, Nome e Recurso da Imagem/Bandeira)
- */
 data class LanguageModel(val id: String, val name: String, val flagRes: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,10 +69,8 @@ fun IdiomaScreen(navController: NavHostController) {
         factory = ViewModelFactory { SettingsViewModel(settingsRepository) }
     )
 
-    // Estado que armazena qual idioma está selecionado (começa com "pt" - Português)
     val selectedId = viewModel.language.collectAsState()
 
-    // Lista estática com os idiomas disponíveis no app, referenciando os drawables das bandeiras
     val idiomas = listOf(
         LanguageModel("pt", stringResource(R.string.portugues_brasileiro), R.drawable.brasil_flag),
         LanguageModel("en", stringResource(R.string.ingles), R.drawable.eua_flag),
@@ -65,79 +78,72 @@ fun IdiomaScreen(navController: NavHostController) {
         LanguageModel("fr", stringResource(R.string.frances), R.drawable.franca_flag)
     )
 
-    // Estrutura principal da tela com barra superior e fundo branco
     Scaffold(
-        topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.idioma), navController) }, // Componente personalizado de AppBar
-        containerColor = MaterialTheme.colorScheme.background // Define a cor de fundo da tela inteira
-    ) { paddingValues -> // Recebe os espaçamentos automáticos da Scaffold
+        topBar = { AppBarDefaultWithGoBackButton(stringResource(R.string.idioma), navController) },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxSize() // Ocupa todo o espaço disponível
-                .padding(paddingValues) // Aplica o padding vindo da Scaffold
-                .padding(horizontal = 24.dp), // Adiciona margem lateral de 24dp
-            horizontalAlignment = Alignment.CenterHorizontally // Centraliza os itens na horizontal
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(32.dp)) // Espaço entre o topo e o ícone
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // --- ÍCONE CENTRAL COM CÍRCULO SUAVE ---
             Box(
                 modifier = Modifier
-                    .size(100.dp) // Define o tamanho do círculo
-                    .clip(CircleShape) // Corta o fundo em formato circular
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.20f)), // Fundo leve com a cor primária
-                contentAlignment = Alignment.Center // Centraliza o ícone dentro do círculo
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.20f)),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.Language, // Ícone de globo/idioma
-                    contentDescription = null, // Descrição opcional para acessibilidade
-                    modifier = Modifier.size(48.dp), // Tamanho do ícone
-                    tint = MaterialTheme.colorScheme.primary // Cor do ícone baseada no tema
+                    imageVector = Icons.Default.Language,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp)) // Espaço entre ícone e título
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // --- TEXTOS DE APOIO ---
             Text(
                 text = stringResource(R.string.escolha_seu_idioma),
-                fontSize = 22.sp, // Tamanho da fonte do título
-                fontWeight = FontWeight.Bold, // Fonte em negrito
-                color = MaterialTheme.colorScheme.onBackground // Cor de texto quase preta
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
-            Spacer(modifier = Modifier.height(8.dp)) // Espaço entre título e subtítulo
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.selecione_preferencia_idioma),
-                fontSize = 15.sp, // Tamanho da fonte do subtítulo
-                color = Color.Gray // Cor cinza para dar menos destaque
+                fontSize = 15.sp,
+                color = Color.Gray
             )
 
-            Spacer(modifier = Modifier.height(40.dp)) // Espaço antes da lista de idiomas
+            Spacer(modifier = Modifier.height(40.dp))
 
-            // --- LISTA DE IDIOMAS ---
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp), // Espaçamento de 16dp entre cada item da lista
-                modifier = Modifier.fillMaxWidth() // A lista ocupa toda a largura disponível
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
-                // Itera sobre a lista de idiomas e cria um card para cada um
                 items(idiomas) { idioma ->
                     IdiomaCard(
                         idioma = idioma,
-                        isSelected = selectedId.value == idioma.id, // Verifica se este idioma é o selecionado
+                        isSelected = selectedId.value == idioma.id,
                         onSelect = {
                             viewModel.changeLanguage(idioma.id)
-                            println("TENTANDO MUDAR PARA " + idioma.id)
-                        } // Atualiza o estado ao clicar
+                        }
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Empurra o botão para o final da tela
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {
-                    // Lógica para salvar o idioma e voltar ou prosseguir
-                    navController.popBackStack()
-                },
+                onClick = { navController.popBackStack() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -161,69 +167,62 @@ fun IdiomaScreen(navController: NavHostController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp)) // Respiro final para não colar na borda do celular
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
 
-/**
- * Componente que representa cada linha/item de idioma na lista
- */
 @Composable
 fun IdiomaCard(
     idioma: LanguageModel,
     isSelected: Boolean,
     onSelect: () -> Unit
 ) {
-    // Variáveis de estilo que mudam se o item estiver selecionado ou não
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else MaterialTheme.colorScheme.background
     val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color(0xFFEEEEEE)
     val textColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
 
     Row(
         modifier = Modifier
-            .fillMaxWidth() // Item ocupa a largura total
-            .height(70.dp) // Altura fixa de cada card
-            .clip(RoundedCornerShape(16.dp)) // Bordas arredondadas de 16dp
-            .background(backgroundColor) // Cor de fundo definida acima
+            .fillMaxWidth()
+            .height(70.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor)
             .border(
-                width = if (isSelected) 2.dp else 1.dp, // Borda mais grossa se selecionado
-                color = borderColor, // Cor da borda definida acima
+                width = if (isSelected) 2.dp else 1.dp,
+                color = borderColor,
                 shape = RoundedCornerShape(16.dp)
             )
-            .clickable { onSelect() } // Torna o card clicável
-            .padding(horizontal = 16.dp), // Espaçamento interno lateral
-        verticalAlignment = Alignment.CenterVertically // Centraliza os itens da linha verticalmente
+            .clickable { onSelect() }
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        // Exibe a bandeira do idioma
         Image(
             painter = painterResource(idioma.flagRes),
             contentDescription = null,
-            contentScale = ContentScale.Crop, // Ajusta a imagem para preencher o círculo
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(32.dp) // Tamanho da bandeira
-                .clip(CircleShape) // Corta a bandeira em formato circular
+                .size(32.dp)
+                .clip(CircleShape)
         )
 
-        Spacer(modifier = Modifier.width(16.dp)) // Espaço entre a bandeira e o texto
+        Spacer(modifier = Modifier.width(16.dp))
 
-        // Nome do idioma
         Text(
             text = idioma.name,
-            modifier = Modifier.weight(1f), // Faz o texto ocupar o espaço restante da linha
+            modifier = Modifier.weight(1f),
             fontSize = 16.sp,
-            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium, // Negrito se selecionado
+            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
             color = textColor
         )
 
-        // Indicador de Seleção (Círculo lateral com ícone de check)
         Box(
             modifier = Modifier
-                .size(24.dp) // Tamanho da bolinha indicadora
+                .size(24.dp)
                 .clip(CircleShape)
                 .background(
-                    if (isSelected) MaterialTheme.colorScheme.primary // Fica colorido se selecionado
-                    else Color.Transparent // Fica transparente se não selecionado
+                    if (isSelected) MaterialTheme.colorScheme.primary
+                    else Color.Transparent
                 )
                 .border(
                     width = 2.dp,
@@ -232,7 +231,6 @@ fun IdiomaCard(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            // Se estiver selecionado, exibe um ícone de check branco dentro da bolinha
             if (isSelected) {
                 Icon(
                     imageVector = Icons.Default.Check,
@@ -245,9 +243,6 @@ fun IdiomaCard(
     }
 }
 
-/**
- * Função de visualização
- */
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewIdiomaScreen() {
