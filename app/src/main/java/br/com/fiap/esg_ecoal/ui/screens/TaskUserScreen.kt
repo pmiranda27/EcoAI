@@ -392,7 +392,7 @@ fun CreateGoalDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nova Meta") },
+        title = { Text(stringResource(R.string.nova_meta)) },
         text = {
             Column {
                 OutlinedTextField(
