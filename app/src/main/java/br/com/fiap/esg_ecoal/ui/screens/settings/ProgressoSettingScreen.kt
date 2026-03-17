@@ -69,7 +69,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.esg_ecoal.R
-import br.com.fiap.esg_ecoal.data.model.GoalResponse
 import br.com.fiap.esg_ecoal.data.model.UiState
 import br.com.fiap.esg_ecoal.factory.ViewModelFactory
 import br.com.fiap.esg_ecoal.repository.GoalsRepository
